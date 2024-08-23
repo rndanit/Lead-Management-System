@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">LMS</string>
+    <string name="navigation_drawer_open">Open\n</string>
+    <string name="navigation_drawer_close">Close</string>
+    <string name="user_image_description">User Image\n</string>
+    <string name="default_notification_channel_id">default_channel_id</string>
+    <string name="default_notification_channel_name">Default Channel</string>
+    <string name="success_emoji">smile Emoji\n</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

@@ -1,0 +1,21 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.LMS" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+
+        <item name="colorPrimary">@color/gray</item>
+        <item name="colorPrimaryVariant">@color/gray</item>
+        <item name="android:statusBarColor">@color/gray</item>
+
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <!-- Custom Text Appearance for Toolbar Title -->
+    <style name="CustomToolbarTitleTextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/montserrat_bold</item> <!-- Use your custom font -->
+        <item name="android:textColor">@color/black</item> <!-- Set text color -->
+        <item name="android:textSize">20sp</item> <!-- Set text size -->
+    </style>
+
+    <style name="Theme.LMS" parent="Base.Theme.LMS" />
+</resources>

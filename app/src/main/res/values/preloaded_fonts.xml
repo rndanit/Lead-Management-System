@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/acme</item>
+        <item>@font/baloo_chettan</item>
+        <item>@font/caprasimo</item>
+        <item>@font/lato_bold</item>
+        <item>@font/lato_thin</item>
+        <item>@font/montserrat_bold</item>
+    </array>
+</resources>

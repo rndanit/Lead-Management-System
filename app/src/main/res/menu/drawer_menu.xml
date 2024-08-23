@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/mainhome"
+        android:iconTint="@color/black"
+        android:title="Home" />
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/mainuser"
+        android:iconTint="@color/black"
+        android:title="Profile" />
+    <item
+        android:id="@+id/nav_lead"
+        android:iconTint="@color/black"
+        android:icon="@drawable/mainead"
+        android:title="Lead"/>
+
+    <item
+        android:id="@+id/nav_logout"
+        android:iconTint="@color/black"
+        android:icon="@drawable/mainlogout"
+        android:title="Logout"/>
+</menu>
