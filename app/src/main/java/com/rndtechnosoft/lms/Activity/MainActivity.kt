@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tabLayout:TabLayout
     private lateinit var viewPager:ViewPager2
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -164,8 +165,8 @@ class MainActivity : AppCompatActivity() {
         val headerView = navigationView.getHeaderView(0)
         userName = headerView.findViewById(R.id.user_name)
         userEmail = headerView.findViewById(R.id.user_email)
-        userName.text = name
-        userEmail.text = email
+       // userName.text = name
+       // userEmail.text = email
 
         fetchUserDetails()
     }
@@ -308,6 +309,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         registerReceiver(notificationReceiver, IntentFilter("NOTIFICATION_RECEIVED"))
         notificationBell?.actionView?.clearAnimation()
+        fetchUserDetails()
     }
 
     override fun onPause() {
