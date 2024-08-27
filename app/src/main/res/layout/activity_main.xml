@@ -53,7 +53,7 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/add_leads"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="16dp"

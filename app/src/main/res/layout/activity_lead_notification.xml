@@ -12,10 +12,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/maincolor"
-        android:title="Lead Notification"
         app:titleTextColor="@color/white"
+        app:navigationIcon="@drawable/back"
         android:theme="?attr/actionBarTheme"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notification"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:layout_gravity="center"
+            android:textColor="@color/white"/>
+    </androidx.appcompat.widget.Toolbar>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"

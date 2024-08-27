@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.PowerManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -19,11 +20,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-        // Handle the notification
-        val intent = Intent("NOTIFICATION_RECEIVED")
-        sendBroadcast(intent)
-
+        // Log the incoming message
         Log.d(TAG, "From: ${remoteMessage.from}")
+
+        // Wake up the screen when notification is received
+        wakeUpScreen()
 
         // Check if message contains a notification payload
         remoteMessage.notification?.let {
@@ -49,7 +50,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .setStyle(NotificationCompat.BigTextStyle().bigText(messageBody))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)  // Set high priority
+            .setDefaults(NotificationCompat.DEFAULT_ALL)   // Ensure default behaviors (sound, light, vibration)
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -58,12 +60,21 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val channel = NotificationChannel(
                 channelId,
                 getString(R.string.default_notification_channel_name),
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH  // Set importance high
             )
             notificationManager.createNotificationChannel(channel)
         }
 
-        // Use a unique ID for each notification if multiple notifications might be shown
+        // Notify the user with the unique ID
         notificationManager.notify(System.currentTimeMillis().toInt(), notificationBuilder.build())
+    }
+
+    private fun wakeUpScreen() {
+        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        val wakeLock = powerManager.newWakeLock(
+            PowerManager.FULL_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP or PowerManager.ON_AFTER_RELEASE,
+            "$packageName:NotificationWakeLock"
+        )
+        wakeLock.acquire(3000) // Wake up the screen for 3 seconds
     }
 }

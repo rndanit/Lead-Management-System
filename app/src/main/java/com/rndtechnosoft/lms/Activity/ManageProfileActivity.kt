@@ -77,12 +77,20 @@ class ManageProfileActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         // Customize the toolbar
-        supportActionBar?.title = "Edit Profile" // Set the toolbar title
-        toolbar.setTitleTextColor(getColor(R.color.white)) // Set the title color
+        //supportActionBar?.title = "Edit Profile" // Set the toolbar title
+        //toolbar.setTitleTextColor(getColor(R.color.white)) // Set the title color
 
         // Enable back button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        // Handle the back button click
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+
 
         // Set the toolbar background color (optional)
         //toolbar.setBackgroundColor(getColor(R.color.colorPrimary))

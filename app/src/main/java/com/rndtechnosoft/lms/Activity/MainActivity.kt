@@ -102,6 +102,7 @@ class MainActivity : AppCompatActivity() {
         toolbar.setSubtitleTextColor(Color.BLACK)
         setSupportActionBar(toolbar)
 
+
         drawerLayout = findViewById(R.id.drawer_layout)
         val navigationView: NavigationView = findViewById(R.id.navigation_view)
 

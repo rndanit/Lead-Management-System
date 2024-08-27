@@ -13,17 +13,28 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/maincolor"
         android:theme="?attr/actionBarTheme"
-        android:title="Your Toolbar Title"
+        android:title=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@color/white" />
+        app:navigationIcon="@drawable/back"
+        app:titleTextColor="@color/white" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profile"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:layout_gravity="center"
+            android:textColor="@color/white"/>
+    </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="62dp"
+        android:layout_marginTop="92dp"
         android:backgroundTint="@color/white"
         app:cardCornerRadius="100dp"
         app:cardElevation="3dp"
@@ -132,7 +143,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/logoutAccount"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginTop="32dp"
         android:backgroundTint="@color/maincolor"
         app:cardCornerRadius="25dp"

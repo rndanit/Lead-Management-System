@@ -59,6 +59,14 @@ class LeadNotificationActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        // Handle the back button click
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+
+
         // Show progress bar and text
         progressBarTextView.visibility = View.VISIBLE
         progressBar.visibility = View.VISIBLE
