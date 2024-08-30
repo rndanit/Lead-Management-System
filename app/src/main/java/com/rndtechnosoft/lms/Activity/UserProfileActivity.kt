@@ -164,34 +164,44 @@ class UserProfileActivity : AppCompatActivity() {
     }
 
 
+    // Alert Box Functionality
     private fun showLogoutConfirmationDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Alert")
         builder.setMessage("Do you want to logout?")
         builder.setPositiveButton("Yes") { dialogInterface, _ ->
-            // User clicked Yes
             dialogInterface.dismiss()
-            showLogoutSuccessDialog()
+            performLogout()
         }
         builder.setNegativeButton("No") { dialogInterface, _ ->
-            // User clicked No
             dialogInterface.dismiss()
         }
         builder.show()
     }
 
+    // Perform Logout Functionality
+    private fun performLogout() {
+        // Clear user session data
+        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+
+        // Show logout success dialog and redirect to login
+        showLogoutSuccessDialog()
+    }
+
+    // Alert Box Functionality
     private fun showLogoutSuccessDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Success")
         builder.setMessage("Logged out successfully")
         builder.setPositiveButton("OK") { dialogInterface, _ ->
-            // User clicked OK
             dialogInterface.dismiss()
-            // Navigate to LoginActivity
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
-            finish() // Optional, if you don't want the user to be able to return to this activity
+            finish()
         }
         builder.show()
     }

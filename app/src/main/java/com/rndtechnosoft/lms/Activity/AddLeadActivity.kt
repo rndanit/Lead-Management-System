@@ -45,9 +45,6 @@ class AddLeadActivity : AppCompatActivity() {
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        // Customize the toolbar
-        //supportActionBar?.title = "Add Lead" // Set the toolbar title
-        //toolbar.setTitleTextColor(getColor(R.color.white)) // Set the title color
 
         // Enable back button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -78,7 +75,6 @@ class AddLeadActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val token = sharedPreferences.getString("token", null)
 
-        Toast.makeText(this@AddLeadActivity, "Token No:-$token", Toast.LENGTH_SHORT).show()
 
         //Functionality of a ProgressBar.
         mProgress = ProgressDialog(this).apply {
@@ -106,9 +102,6 @@ class AddLeadActivity : AppCompatActivity() {
         // Retrieve the token from SharedPreferences
         val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val id = sharedPreferences.getString("userId", null)
-
-        Toast.makeText(this@AddLeadActivity, "Id No: $id", Toast.LENGTH_SHORT).show()
-
 
         val firstname = firstnameEditText.text.toString().trim()
         val lastname = lastnameEditText.text.toString().trim()
@@ -153,7 +146,7 @@ class AddLeadActivity : AppCompatActivity() {
                         if (response.isSuccessful) {
                             val addLeadResponse = response.body()
                             if (addLeadResponse != null) {
-                                Toast.makeText(this@AddLeadActivity, "Lead added successfully: $addLeadResponse", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@AddLeadActivity, "Lead added successfully", Toast.LENGTH_SHORT).show()
                                 finish()
                             }
                         } else {

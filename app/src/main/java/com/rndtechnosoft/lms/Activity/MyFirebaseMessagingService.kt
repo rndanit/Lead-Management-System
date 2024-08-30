@@ -5,6 +5,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.media.RingtoneManager
 import android.os.Build
 import android.os.PowerManager
 import android.util.Log
@@ -34,7 +36,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun sendNotification(title: String?, messageBody: String?) {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, LeadNotificationActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(
             this, 0, intent,
@@ -43,15 +45,20 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val channelId = getString(R.string.default_notification_channel_id)
 
+        // Set the default notification sound
+        val notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.notification_drawable)
             .setContentTitle(title)
             .setContentText(messageBody)
             .setAutoCancel(true)
+            .setSound(notificationSound)  // Set the notification sound
+            .setLights(Color.BLUE, 500, 2000)  // Set LED light color, duration, and blinking pattern
             .setContentIntent(pendingIntent)
             .setStyle(NotificationCompat.BigTextStyle().bigText(messageBody))
             .setPriority(NotificationCompat.PRIORITY_HIGH)  // Set high priority
-            .setDefaults(NotificationCompat.DEFAULT_ALL)   // Ensure default behaviors (sound, light, vibration)
+            .setDefaults(NotificationCompat.DEFAULT_VIBRATE or NotificationCompat.DEFAULT_SOUND)  // Vibrate and sound
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -62,17 +69,20 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 getString(R.string.default_notification_channel_name),
                 NotificationManager.IMPORTANCE_HIGH  // Set importance high
             )
+            channel.enableLights(true)
+            channel.lightColor = Color.BLUE
+            channel.enableVibration(true)
             notificationManager.createNotificationChannel(channel)
         }
 
-        // Notify the user with the unique ID
+        // Notify the user with a unique ID
         notificationManager.notify(System.currentTimeMillis().toInt(), notificationBuilder.build())
     }
 
     private fun wakeUpScreen() {
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         val wakeLock = powerManager.newWakeLock(
-            PowerManager.FULL_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP or PowerManager.ON_AFTER_RELEASE,
+            PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP,
             "$packageName:NotificationWakeLock"
         )
         wakeLock.acquire(3000) // Wake up the screen for 3 seconds

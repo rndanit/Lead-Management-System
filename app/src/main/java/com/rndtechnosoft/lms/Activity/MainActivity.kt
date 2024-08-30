@@ -80,18 +80,12 @@ class MainActivity : AppCompatActivity() {
         })
 
 
-
-
-        // Check if the user is logged in
         val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
-
-        if (!isLoggedIn) {
-            // Redirect to LoginActivity if not logged in
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
+        if (!sharedPreferences.getBoolean("isLoggedIn", false)) {
+            startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
+
 
         // Find the Id of UI Components.
        // showLead = findViewById(R.id.show_leads)
@@ -245,12 +239,24 @@ class MainActivity : AppCompatActivity() {
         builder.setMessage("Do you want to logout?")
         builder.setPositiveButton("Yes") { dialogInterface, _ ->
             dialogInterface.dismiss()
-            showLogoutSuccessDialog()
+            performLogout()
         }
         builder.setNegativeButton("No") { dialogInterface, _ ->
             dialogInterface.dismiss()
         }
         builder.show()
+    }
+
+    // Perform Logout Functionality
+    private fun performLogout() {
+        // Clear user session data
+        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+
+        // Show logout success dialog and redirect to login
+        showLogoutSuccessDialog()
     }
 
     // Alert Box Functionality
@@ -280,43 +286,12 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    // Show notification bell animation
-    private fun showNotificationBellAnimation() {
-        val actionView = notificationBell?.actionView ?: return
-
-        // Applying a rotation animation
-        val rotation = ObjectAnimator.ofFloat(actionView, "rotation", 0f, 360f)
-        rotation.duration = 500 // duration of animation
-        rotation.repeatCount = 2 // number of times to repeat
-
-        rotation.start()
-    }
-
-    // Trigger notification bell animation
-    private fun triggerNotificationBellAnimation() {
-        runOnUiThread {
-            showNotificationBellAnimation()
-        }
-    }
-
-    // BroadcastReceiver to listen for notifications
-    private val notificationReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            triggerNotificationBellAnimation()
-        }
-    }
 
     override fun onResume() {
         super.onResume()
-        registerReceiver(notificationReceiver, IntentFilter("NOTIFICATION_RECEIVED"))
-        notificationBell?.actionView?.clearAnimation()
         fetchUserDetails()
     }
 
-    override fun onPause() {
-        super.onPause()
-        unregisterReceiver(notificationReceiver)
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {

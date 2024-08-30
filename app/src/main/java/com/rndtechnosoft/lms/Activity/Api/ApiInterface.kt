@@ -3,12 +3,13 @@ package com.rndtechnosoft.lms.Activity.Api
 
 import com.rndtechnosoft.lms.Activity.DataModel.AddLeadRequest
 import com.rndtechnosoft.lms.Activity.DataModel.AddLeadResponse
-import com.rndtechnosoft.lms.Activity.DataModel.DataX
 import com.rndtechnosoft.lms.Activity.DataModel.GetUserResponse
-import com.rndtechnosoft.lms.Activity.DataModel.NotificationResponse
+import com.rndtechnosoft.lms.Activity.DataModel.NotificationResponseItem
 import com.rndtechnosoft.lms.Activity.DataModel.ShowLeadResponseItem
 import com.rndtechnosoft.lms.Activity.DataModel.StatusResponse
+import com.rndtechnosoft.lms.Activity.DataModel.UpdaredleadRequest
 import com.rndtechnosoft.lms.Activity.DataModel.UpdatedFields
+import com.rndtechnosoft.lms.Activity.DataModel.UpdatedLeadResponse
 import com.rndtechnosoft.lms.Activity.DataModel.UserLoginRequest
 import com.rndtechnosoft.lms.Activity.DataModel.UserLoginResponse
 import com.rndtechnosoft.lms.Activity.DataModel.UserSignupRequest
@@ -73,13 +74,18 @@ interface ApiInterface {
 
     //Notification EndPoint.
     @GET("notification/getNotification")
-    fun notification(@Header("Authorization") token: String): Call<MutableList<NotificationResponse>>
+    fun notification(@Header("Authorization") token: String): Call<MutableList<NotificationResponseItem>>
 
     //Notification AddLead or CancelLead EndPoint.
     @PUT("notification/updateIsExcept")
     fun notificationOperations(@Header("Authorization") token: String, @Query("id") id: String,@Query("isExcept") isExcept:Any ): Call<Void>
 
+    //Status Endpoint.
     @GET("lead/filterUserLeadsByStatus")
     fun statusOperation(@Header("Authorization") token: String, @Query("user") user: String,@Query("status") status:String): Call<StatusResponse>
+
+    //Status Updated.
+    @PUT("lead/updatelead")
+    fun statusUpdate(@Header("Authorization") token: String,@Query("id") id: String,@Body request: UpdaredleadRequest): Call<UpdatedLeadResponse>
 }
 

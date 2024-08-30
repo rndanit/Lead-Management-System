@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -18,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.rndtechnosoft.lms.Activity.Adapter.NotificationAdapter
 import com.rndtechnosoft.lms.Activity.Api.RetrofitInstance
-import com.rndtechnosoft.lms.Activity.DataModel.NotificationResponse
+import com.rndtechnosoft.lms.Activity.DataModel.NotificationResponseItem
 import com.rndtechnosoft.lms.R
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,7 +31,7 @@ class LeadNotificationActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var progressBarTextView: TextView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private var notificationList: MutableList<NotificationResponse> = mutableListOf()
+    private var notificationList: MutableList<NotificationResponseItem> = mutableListOf()
     private var ids: String? = null
 
 
@@ -94,8 +93,8 @@ class LeadNotificationActivity : AppCompatActivity() {
         Log.d("User Id", "fetchLeads: $userId")
 
         if (token != null) {
-            RetrofitInstance.apiInterface.notification("Bearer $token").enqueue(object : Callback<MutableList<NotificationResponse>> {
-                override fun onResponse(call: Call<MutableList<NotificationResponse>>, response: Response<MutableList<NotificationResponse>>) {
+            RetrofitInstance.apiInterface.notification("Bearer $token").enqueue(object : Callback<MutableList<NotificationResponseItem>> {
+                override fun onResponse(call: Call<MutableList<NotificationResponseItem>>, response: Response<MutableList<NotificationResponseItem>>) {
                     Log.d("API Response", "Response code: ${response.code()}")
                     if (response.isSuccessful && response.body() != null) {
                         val notifications = response.body()!!
@@ -104,6 +103,14 @@ class LeadNotificationActivity : AppCompatActivity() {
                         // Store _id values of a Notification Id.
                         ids = notifications.map { it._id }.toString()
                         Log.d("NotificationActivity", "Notification IDs: $ids")
+
+                        // Save the ids in SharedPreferences
+                        //sharedPreferences.edit().putString("notification_ids", ids).apply()
+
+
+                        // Sort the notifications by `createdAt` in descending order
+                        notifications.sortByDescending { it.createdAt } // Replace `createdAt` with the correct field name
+
 
                         // Hide the progress bar and text
                         progressBarTextView.visibility = View.GONE
@@ -143,7 +150,7 @@ class LeadNotificationActivity : AppCompatActivity() {
                     }
                 }
 
-                override fun onFailure(call: Call<MutableList<NotificationResponse>>, t: Throwable) {
+                override fun onFailure(call: Call<MutableList<NotificationResponseItem>>, t: Throwable) {
                     Log.e("NotificationActivity", "API call failed", t)
                 }
             })

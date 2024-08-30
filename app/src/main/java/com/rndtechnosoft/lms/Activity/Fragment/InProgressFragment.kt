@@ -103,7 +103,7 @@ class InProgressFragment : Fragment() {
                             // Hide "No Leads Found" message and show the list
                             noLeadsTextView.visibility = View.GONE
                             recyclerView.visibility = View.VISIBLE
-                            adapter = StatusAdapter(leads,cardColor,textColor)
+                            adapter = context?.let { StatusAdapter(it,leads,cardColor,textColor) }!!
                             recyclerView.adapter = adapter
                         }
                     } else {

@@ -107,7 +107,7 @@ class SignUpActivity : AppCompatActivity() {
                         if (signupResponse != null) {
 
                             //showToast()
-                             Toast.makeText(this@SignUpActivity ,"Signup successful", Toast.LENGTH_SHORT).show()
+                             Toast.makeText(this@SignUpActivity ,"Signup Successfully", Toast.LENGTH_SHORT).show()
                             Log.d("SignUpResponse", "onResponse: $signupResponse")
 
                             // Store user data in SharedPreferences

@@ -34,6 +34,7 @@ class NewLeadFragment : Fragment() {
     private lateinit var progressBarTextView: TextView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var noLeadsTextView: TextView
+    private var ids: String? = null
 
     @SuppressLint("MissingInflatedId")
     @RequiresApi(Build.VERSION_CODES.M)
@@ -82,8 +83,22 @@ class NewLeadFragment : Fragment() {
                 override fun onResponse(call: Call<StatusResponse>, response: Response<StatusResponse>) {
                     Log.d("API Response", "Response code: ${response.code()}")
                     if (response.isSuccessful && response.body() != null) {
-                        val leads = response.body()!!.data
+                        var leads = response.body()!!.data
+
                         Log.d("ShowLeadFragment", "Fetched leads: $leads")
+                        // Store _id values of Notification Ids
+                        val idsList = leads.map { it._id }
+                        ids = idsList.joinToString(",")  // Convert the list to a comma-separated string
+                        Log.d("NotificationActivity", "Notification IDs: $ids")
+
+                        // Save the ids string in SharedPreferences
+                        sharedPreferences.edit().putString("notification_ids", ids).apply()
+
+
+
+
+                        // Sort the notifications by `createdAt` in descending order
+                        //leads.sortedByDescending {it.createdAt} // Replace `createdAt` with the correct field name
 
                         // Define the colors for NewFragment
                         val cardColor = ContextCompat.getColor(requireContext(), R.color.buleindigo)
@@ -103,7 +118,7 @@ class NewLeadFragment : Fragment() {
                             // Hide "No Leads Found" message and show the list
                             noLeadsTextView.visibility = View.GONE
                             recyclerView.visibility = View.VISIBLE
-                            adapter = StatusAdapter(leads,cardColor,textColor)
+                            adapter = context?.let { StatusAdapter(it,leads,cardColor,textColor) }!!
                             recyclerView.adapter = adapter
                         }
                     } else {

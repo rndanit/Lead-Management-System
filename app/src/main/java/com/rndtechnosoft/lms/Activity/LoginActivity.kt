@@ -42,6 +42,13 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        // Check if the user is already logged in
+        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+        if (isLoggedIn) {
+            navigateToMainActivity()
+        }
+
         // Force light mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
@@ -153,10 +160,17 @@ class LoginActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val loginResponse = response.body()
                         if (loginResponse != null) {
-                            Toast.makeText( this@LoginActivity, "Login successful: ${loginResponse.msg}", Toast.LENGTH_SHORT ).show()
-                           // showCustomToast()
+                            Toast.makeText(
+                                this@LoginActivity,
+                                "Login Successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            // showCustomToast()
                             //Toast.makeText(this@LoginActivity, "Login ID: ${loginResponse.id}", Toast.LENGTH_SHORT).show()
                             Log.d("LoginResponse", "onResponse: $loginResponse")
+                            //saveUserData(loginResponse)
+
+                            navigateToMainActivity()
 
                             // Store the token in SharedPreferences
                             val sharedPreferences =
@@ -192,6 +206,24 @@ class LoginActivity : AppCompatActivity() {
                     ).show()
                 }
             })
+    }
+
+    /*
+    private fun saveUserData(loginResponse: UserLoginResponse) {
+        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putString("token", loginResponse.token)
+            putString("userId", loginResponse.id)
+            putBoolean("isLoggedIn", true)
+            apply()
+        }
+    }
+
+     */
+
+    private fun navigateToMainActivity() {
+        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+        finish()
     }
 
     private fun showCustomToast() {

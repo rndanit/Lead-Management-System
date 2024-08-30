@@ -76,9 +76,6 @@ class ManageProfileActivity : AppCompatActivity() {
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        // Customize the toolbar
-        //supportActionBar?.title = "Edit Profile" // Set the toolbar title
-        //toolbar.setTitleTextColor(getColor(R.color.white)) // Set the title color
 
         // Enable back button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -91,14 +88,9 @@ class ManageProfileActivity : AppCompatActivity() {
             onBackPressed()
         }
 
-
-        // Set the toolbar background color (optional)
-        //toolbar.setBackgroundColor(getColor(R.color.colorPrimary))
-
-
         //Functionality of a ProgressBar.
         mProgress = ProgressDialog(this).apply {
-            setTitle("Loading Data....")
+            setTitle("Saving Data....")
             setMessage("Please wait...")
             setCancelable(false)
             setIndeterminate(true)
@@ -137,7 +129,6 @@ class ManageProfileActivity : AppCompatActivity() {
         // Retrieve the token from SharedPreferences
         val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val token = sharedPreferences.getString("token", null)
-        Toast.makeText(this@ManageProfileActivity, "Token Number:${token}", Toast.LENGTH_SHORT).show()
 
 
         // Convert to RequestBody
@@ -169,7 +160,6 @@ class ManageProfileActivity : AppCompatActivity() {
                         mProgress.dismiss()
                         if (response.isSuccessful) {
                             val profileResponse = response.body()
-                            Toast.makeText(this@ManageProfileActivity, "Response:-${profileResponse}", Toast.LENGTH_SHORT).show()
                             profileResponse?.let {
                                 userName.setText(it.name)
                                 email.setText(it.email)
