@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -18,6 +20,7 @@ import com.rndtechnosoft.lms.Activity.DataModel.AddLeadRequest
 import com.rndtechnosoft.lms.Activity.DataModel.AddLeadResponse
 import com.rndtechnosoft.lms.R
 import com.google.gson.JsonParser
+import com.rndtechnosoft.lms.Activity.DataModel.leadSourceResponseItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,7 +32,7 @@ class AddLeadActivity : AppCompatActivity() {
     private lateinit var mobileEditText: EditText
     private lateinit var emailEditText: EditText
     private lateinit var companynameEditText: EditText
-    private lateinit var leadInfoEditText: EditText
+    private lateinit var leadSourceEditText: AutoCompleteTextView
     private lateinit var leadDetailEditText: EditText
     private lateinit var addLeadButton: AppCompatButton
     private lateinit var mProgress: ProgressDialog
@@ -68,7 +71,7 @@ class AddLeadActivity : AppCompatActivity() {
         mobileEditText = findViewById(R.id.MobileNumberEditText)
         emailEditText = findViewById(R.id.EmailaddressEditText)
         companynameEditText = findViewById(R.id.CompanyNameEditText)
-        leadInfoEditText = findViewById(R.id.LeadInfoEditText)
+        leadSourceEditText = findViewById(R.id.LeadInfoEditText)
         leadDetailEditText = findViewById(R.id.LeadDetailEditText)
 
         // Retrieve the token from SharedPreferences
@@ -84,6 +87,12 @@ class AddLeadActivity : AppCompatActivity() {
             setIndeterminate(true)
         }
 
+        // Set up click listener for leadSourceEditText
+        leadSourceEditText.setOnClickListener {
+            token?.let { fetchLeadSources(it) }
+        }
+
+
         addLeadButton.setOnClickListener {
             if (token != null) {
                 // Use the token for making API requests
@@ -94,6 +103,49 @@ class AddLeadActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun fetchLeadSources(token: String) {
+        RetrofitInstance.apiInterface.leadSource("Bearer $token")
+            .enqueue(object : Callback<MutableList<leadSourceResponseItem>> {
+                override fun onResponse(
+                    call: Call<MutableList<leadSourceResponseItem>>,
+                    response: Response<MutableList<leadSourceResponseItem>>
+                ) {
+
+                    if (response.isSuccessful) {
+                        val leadSources = response.body()
+                        if (!leadSources.isNullOrEmpty()) {
+                            val leadSourceNames = leadSources.map { it.leadSources }
+                            val adapter = ArrayAdapter(
+                                this@AddLeadActivity,
+                                android.R.layout.simple_dropdown_item_1line,
+                                leadSourceNames
+                            )
+                            leadSourceEditText.setAdapter(adapter)
+                            leadSourceEditText.showDropDown()
+                        }
+                    } else {
+                        Toast.makeText(
+                            this@AddLeadActivity,
+                            "Failed to fetch lead sources",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<MutableList<leadSourceResponseItem>>,
+                    t: Throwable
+                ) {
+                    mProgress.dismiss()
+                    Toast.makeText(
+                        this@AddLeadActivity,
+                        "Error: ${t.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
     }
 
 
@@ -108,7 +160,7 @@ class AddLeadActivity : AppCompatActivity() {
         val mobile = mobileEditText.text.toString().trim()
         val email = emailEditText.text.toString().trim()
         val companyname = companynameEditText.text.toString().trim()
-        val leadInfo = leadInfoEditText.text.toString().trim()
+        val leadInfo = leadSourceEditText.text.toString().trim()
         val leadDetail = leadDetailEditText.text.toString().trim()
 
         if (firstname.isEmpty() || lastname.isEmpty() || mobile.isEmpty() || email.isEmpty() || companyname.isEmpty() || leadInfo.isEmpty()) {
@@ -146,7 +198,11 @@ class AddLeadActivity : AppCompatActivity() {
                         if (response.isSuccessful) {
                             val addLeadResponse = response.body()
                             if (addLeadResponse != null) {
-                                Toast.makeText(this@AddLeadActivity, "Lead added successfully", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this@AddLeadActivity,
+                                    "Lead added successfully",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 finish()
                             }
                         } else {

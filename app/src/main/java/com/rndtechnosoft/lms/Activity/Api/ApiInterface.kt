@@ -14,6 +14,7 @@ import com.rndtechnosoft.lms.Activity.DataModel.UserLoginRequest
 import com.rndtechnosoft.lms.Activity.DataModel.UserLoginResponse
 import com.rndtechnosoft.lms.Activity.DataModel.UserSignupRequest
 import com.rndtechnosoft.lms.Activity.DataModel.UserSignupResponse
+import com.rndtechnosoft.lms.Activity.DataModel.leadSourceResponseItem
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -87,5 +88,9 @@ interface ApiInterface {
     //Status Updated.
     @PUT("lead/updatelead")
     fun statusUpdate(@Header("Authorization") token: String,@Query("id") id: String,@Body request: UpdaredleadRequest): Call<UpdatedLeadResponse>
+
+    //Lead Source Item Endpoint.
+    @GET("leadSource/getAllLeadSources")
+    fun leadSource(@Header("Authorization")  token: String) :Call<MutableList<leadSourceResponseItem>>
 }
 

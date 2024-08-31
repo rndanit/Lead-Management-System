@@ -136,7 +136,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/EmailaddressEditText"
                 app:layout_constraintWidth_percent="0.9" />
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/LeadInfoEditText"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
@@ -152,6 +152,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/CompanyNameEditText"
                 app:layout_constraintWidth_percent="0.9" />
+
 
             <EditText
                 android:id="@+id/LeadDetailEditText"
