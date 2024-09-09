@@ -12,12 +12,24 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/pencilnew"
         android:label="LMS"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/pencilnew"
         android:supportsRtl="true"
         android:theme="@style/Theme.LMS"
         tools:targetApi="31">
+        <activity
+            android:name=".Activity.EditStatusActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.UpdateStatusActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.RestPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ForgetPasswordActivity"
+            android:exported="false" />
         <activity
             android:name=".Activity.ManageProfileActivity"
             android:exported="false" />
@@ -33,8 +45,8 @@
         <activity
             android:name=".Activity.LeadNotificationActivity"
             android:configChanges="orientation|screenSize"
-            android:launchMode="singleTop"
-            android:exported="true" />
+            android:exported="true"
+            android:launchMode="singleTop" />
         <activity
             android:name=".Activity.LoginActivity"
             android:exported="true">
@@ -58,6 +70,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

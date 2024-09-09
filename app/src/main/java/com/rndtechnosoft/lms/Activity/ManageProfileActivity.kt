@@ -3,6 +3,7 @@ package com.rndtechnosoft.lms.Activity
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -17,8 +18,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.Nullable
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatButton
+import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.rndtechnosoft.lms.Activity.Api.RetrofitInstance
 import com.rndtechnosoft.lms.Activity.DataModel.UpdatedFields
@@ -37,7 +40,11 @@ class ManageProfileActivity : AppCompatActivity() {
     private lateinit var mobileNo: EditText
     private lateinit var userName: EditText
     private lateinit var email: EditText
+    private lateinit var password:EditText
+    private lateinit var companyName:EditText
+    private lateinit var websiteName:EditText
     private lateinit var saveButton: Button
+    private lateinit var photo:ImageView
     private val REQUEST_IMAGE_PICK = 1
     private var selectedImageUri: Uri? = null
     private lateinit var mProgress: ProgressDialog
@@ -60,6 +67,9 @@ class ManageProfileActivity : AppCompatActivity() {
         userName = findViewById(R.id.userName)
         email = findViewById(R.id.email)
         mobileNo=findViewById(R.id.mobile)
+        password=findViewById(R.id.password)
+        companyName=findViewById(R.id.company)
+        websiteName=findViewById(R.id.website)
         val btnPickImage = findViewById<FloatingActionButton>(R.id.cameraButton)
 
 
@@ -67,10 +77,17 @@ class ManageProfileActivity : AppCompatActivity() {
         val names = sharedPreferences.getString("name", "Default Name")
         val emails = sharedPreferences.getString("email", "Default Email")
         val mobiles = sharedPreferences.getString("mobile", "Default Mobile")
+        val company=sharedPreferences.getString("company","Default Email")
+        val website=sharedPreferences.getString("website","Default Email")
+        val userpassword=sharedPreferences.getString("userPassword","Default Password")
+
 
         userName.setText(names)
         email.setText(emails)
         mobileNo.setText(mobiles)
+        password.setText(userpassword)
+        companyName.setText(company)
+        websiteName.setText(website)
 
         //Find the Id of a Toolbar.
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
@@ -105,88 +122,206 @@ class ManageProfileActivity : AppCompatActivity() {
             userName.text.clear()
             email.text.clear()
             mobileNo.text.clear()
+            password.text.clear()
+            companyName.text.clear()
+            websiteName.text.clear()
         }
 
         saveButton.setOnClickListener {
-            val name = userName.text.toString().trim()
-            val emailText = email.text.toString().trim()
-            val mobile=mobileNo.text.toString().trim()
+            updateProfile()
 
-            // Check if the name or email is empty
-            if (name.isEmpty() || emailText.isEmpty() || mobile.isEmpty()) {
-                Toast.makeText(this@ManageProfileActivity, "Please fill in your name and email,mobileNumber.", Toast.LENGTH_SHORT).show()
-            } else {
-                updateProfile()
-            }
         }
     }
 
     private fun updateProfile() {
         val name = userName.text.toString()
         val emailText = email.text.toString()
-        val mobile=mobileNo.text.toString()
+        val mobile = mobileNo.text.toString()
+        val password = password.text.toString()
+        val company=companyName.text.toString()
+        val website=websiteName.text.toString()
 
-        // Retrieve the token from SharedPreferences
+        // Retrieve the token, role, and other user data from SharedPreferences
         val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val token = sharedPreferences.getString("token", null)
+        val role = sharedPreferences.getString("role", null)
+        val userId = sharedPreferences.getString("userId", null)
 
+        // Retrieve existing values from SharedPreferences in case fields are empty
+        val currentName = sharedPreferences.getString("name", "")
+        val currentEmail = sharedPreferences.getString("email", "")
+        val currentMobile = sharedPreferences.getString("mobile", "")
+        val currentPassword = sharedPreferences.getString("password", "")
+        val currentCompanyName = sharedPreferences.getString("company", "")
+        val currentWebsite = sharedPreferences.getString("website", "")
+        val originalPhoto = sharedPreferences.getString("photo", "Default Photo")
 
-        // Convert to RequestBody
-        val nameRequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), name)
-        val emailRequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), emailText)
-        val mobileNumberRequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), mobile)
+        // Extract the filename after the last '/'
+        val photoFileName = originalPhoto?.substringAfterLast("/")
+
+        Log.d("Image URL", "Photo File Name: $originalPhoto")
+
+        // Create RequestBody instances
+        val nameRequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), name.ifEmpty { currentName ?: "" })
+        val emailRequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), emailText.ifEmpty { currentEmail ?: "" })
+        val mobileNumberRequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), mobile.ifEmpty { currentMobile ?: "" })
+        val passwordRequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), password.ifEmpty { currentPassword ?: "" })
+        val companyRequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), company.ifEmpty { currentCompanyName ?: "" })
+        val websiteRequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), website.ifEmpty { currentWebsite ?: "" })
+
         val tokenRequestBody = token?.let {
             RequestBody.create("text/plain".toMediaTypeOrNull(), it)
         }
 
         var photoPart: MultipartBody.Part? = null
+        var isPhotoUpdated = false
 
-        selectedImageUri?.let {
-            val file = getFileFromUri(it)
+        if (selectedImageUri != null) {
+            // If a new photo is selected, get the file from URI
+            val file = getFileFromUri(selectedImageUri!!)
             file?.let {
                 val requestFile = RequestBody.create("image/jpeg".toMediaTypeOrNull(), it)
                 photoPart = MultipartBody.Part.createFormData("photo", it.name, requestFile)
+                isPhotoUpdated = true // Mark that the photo is updated
             }
         }
+
+        // Check if any other field (except photo) has been updated
+        val isOtherFieldUpdated = (name != currentName || emailText != currentEmail || mobile != currentMobile || password != currentPassword || company!=currentCompanyName || website!=currentWebsite)
 
         if (tokenRequestBody != null) {
             mProgress.show()
 
-            photoPart?.let {
-                RetrofitInstance.apiInterface.updateProfile("Bearer $token",nameRequestBody, emailRequestBody,mobileNumberRequestBody,
-                    it
-                ).enqueue(object : Callback<UpdatedFields?> {
-                    override fun onResponse(call: Call<UpdatedFields?>, response: Response<UpdatedFields?>) {
-                        mProgress.dismiss()
-                        if (response.isSuccessful) {
-                            val profileResponse = response.body()
-                            profileResponse?.let {
-                                userName.setText(it.name)
-                                email.setText(it.email)
-                                mobileNo.setText(it.mobile)
-
-                                Toast.makeText(this@ManageProfileActivity, "Successfully Profile Updated", Toast.LENGTH_SHORT).show()
-                                finish()
+            when (role) {
+                "user" -> {
+                    if (userId != null) {
+                        if (isPhotoUpdated && isOtherFieldUpdated) {
+                            // Call updateProfile() if both photo and other fields are updated
+                            photoPart?.let {
+                                RetrofitInstance.apiInterface.updateProfile(
+                                    "Bearer $token",
+                                    nameRequestBody,
+                                    emailRequestBody,
+                                    mobileNumberRequestBody,
+                                    passwordRequestBody,
+                                    companyRequestBody,
+                                    websiteRequestBody,
+                                    it,
+                                    id = userId
+                                ).enqueue(profileUpdateCallback)
                             }
-                        } else {
-                            // Handle the error
-                            Toast.makeText(this@ManageProfileActivity, "Failed to update profile. Error code: ${response.code()}", Toast.LENGTH_SHORT).show()
-
-                            Log.d("Update Error", "onResponse: ${response.code()}")
+                        } else if (isOtherFieldUpdated) {
+                            // Call updateProfileData() if only other fields are updated
+                            RetrofitInstance.apiInterface.updateProfileData(
+                                "Bearer $token",
+                                nameRequestBody,
+                                emailRequestBody,
+                                mobileNumberRequestBody,
+                                passwordRequestBody,
+                                companyRequestBody,
+                                websiteRequestBody,
+                                id = userId
+                            ).enqueue(profileUpdateCallback)
                         }
                     }
-
-                    override fun onFailure(call: Call<UpdatedFields?>, t: Throwable) {
-                        mProgress.dismiss()
-                        Toast.makeText(this@ManageProfileActivity, "Failed to update profile: ${t.message}", Toast.LENGTH_SHORT).show()
-                        Log.e("Profile Update", "onFailure: ${t.message}", t)
+                }
+                "Manager" -> {
+                    if (userId != null) {
+                        if (isPhotoUpdated && isOtherFieldUpdated) {
+                            // Call updateProfileManager() if both photo and other fields are updated
+                            photoPart?.let {
+                                RetrofitInstance.apiInterface.updateProfileManager(
+                                    "Bearer $token",
+                                    nameRequestBody,
+                                    emailRequestBody,
+                                    mobileNumberRequestBody,
+                                    passwordRequestBody,
+                                    companyRequestBody,
+                                    websiteRequestBody,
+                                    it,
+                                    id = userId
+                                ).enqueue(profileUpdateCallback)
+                            }
+                        } else if (isOtherFieldUpdated) {
+                            // Call updateProfileManagerData() if only other fields are updated
+                            RetrofitInstance.apiInterface.updateProfileManagerData(
+                                "Bearer $token",
+                                nameRequestBody,
+                                emailRequestBody,
+                                mobileNumberRequestBody,
+                                passwordRequestBody,
+                                companyRequestBody,
+                                websiteRequestBody,
+                                id = userId
+                            ).enqueue(profileUpdateCallback)
+                        }
                     }
-                })
+                }
+                else -> {
+                    Toast.makeText(this, "Unknown role: $role", Toast.LENGTH_SHORT).show()
+                }
             }
         } else {
             Toast.makeText(this, "Token is missing.", Toast.LENGTH_SHORT).show()
         }
     }
+
+    // Function to get file from URI (make sure to implement this correctly)
+
+    // Common callback for profile update
+    private val profileUpdateCallback = object : Callback<UpdatedFields?> {
+        override fun onResponse(call: Call<UpdatedFields?>, response: Response<UpdatedFields?>) {
+            mProgress.dismiss()
+            if (response.isSuccessful) {
+                val profileResponse = response.body()
+                profileResponse?.let {
+                    userName.setText(it.name)
+                    email.setText(it.email)
+                    mobileNo.setText(it.mobile)
+                    companyName.setText(it.companyname)
+                    websiteName.setText(it.website.firstOrNull())
+
+
+                    // Update SharedPreferences with the new data
+                    val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                    sharedPreferences.edit().apply {
+                        putString("name", it.name)
+                        putString("email", it.email)
+                        putString("mobile", it.mobile)
+                        putString("company",it.companyname)
+                        putString("website",it.website.firstOrNull())
+                        apply()
+                    }
+                    // Show success dialog
+
+                    showSuccessDialog()
+                    finish()
+
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                Toast.makeText(this@ManageProfileActivity, "Failed to update profile. Error code: ${response.code()}", Toast.LENGTH_SHORT).show()
+                Log.d("Update Error", "onResponse: ${response.code()} - $errorBody")
+            }
+        }
+
+        override fun onFailure(call: Call<UpdatedFields?>, t: Throwable) {
+            mProgress.dismiss()
+            Toast.makeText(this@ManageProfileActivity, "Failed to update profile: ${t.message}", Toast.LENGTH_SHORT).show()
+            Log.e("Profile Update", "onFailure: ${t.message}", t)
+        }
+    }
+
+    private fun showSuccessDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Success")
+        builder.setMessage("Profile updated successfully!")
+        builder.setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
+            dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
 
     // Utility function to get the actual file from a Uri
     private fun getFileFromUri(uri: Uri): File? {

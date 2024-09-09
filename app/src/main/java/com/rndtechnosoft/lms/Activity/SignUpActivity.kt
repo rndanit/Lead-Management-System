@@ -31,6 +31,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var numberEditText: EditText
     private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
+    private lateinit var websiteEditText:EditText
     private lateinit var confirmEditText: EditText
     private lateinit var progressBar: ProgressBar
     private lateinit var alreadyButton: TextView
@@ -50,6 +51,7 @@ class SignUpActivity : AppCompatActivity() {
         passwordEditText = findViewById(R.id.PasswordEditText)
         confirmEditText = findViewById(R.id.ConfirmEditText)
         progressBar=findViewById(R.id.progressBar)
+        websiteEditText=findViewById(R.id.WebsiteEditText)
 
         //Find the id of SignUp Button
         signUpButton = findViewById(R.id.signUp_button)
@@ -79,8 +81,9 @@ class SignUpActivity : AppCompatActivity() {
         val mobile = numberEditText.text.toString().trim()
         val name = nameEditText.text.toString().trim()
         val password = passwordEditText.text.toString().trim()
+        val website=websiteEditText.text.toString().trim()
 
-        if (email.isEmpty() || password.isEmpty() || companyname.isEmpty() || mobile.isEmpty() || name.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty() || companyname.isEmpty() || mobile.isEmpty() || name.isEmpty() || website.isEmpty()) {
             Toast.makeText(
                 this@SignUpActivity,
                 "Please enter email and password",
@@ -91,7 +94,7 @@ class SignUpActivity : AppCompatActivity() {
             return
         }
 
-        val request = UserSignupRequest(companyname, email, mobile, name, password)
+        val request = UserSignupRequest(companyname, email, mobile, name, password,website)
 
         RetrofitInstance.apiInterface.signupUser(request)
             .enqueue(object : Callback<UserSignupResponse?> {

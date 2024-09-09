@@ -152,13 +152,32 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/PasswordEditText" />
 
+        <EditText
+            android:id="@+id/WebsiteEditText"
+            android:layout_width="340dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:backgroundTint="#CECECE"
+            android:drawableLeft="@drawable/website_scaled"
+            android:drawablePadding="10sp"
+            android:hint="Website"
+            android:inputType="text"
+            android:padding="12dp"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ConfirmEditText" />
+
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/signUp_button"
             android:layout_width="350dp"
             android:layout_height="60dp"
             android:layout_marginTop="32dp"
             android:background="@drawable/processedbuttonshape"
-            android:backgroundTint="#E9BF29"
+            android:backgroundTint="@color/maincolor"
             android:fontFamily="@font/lato_bold"
             android:text="SignUp"
             android:textAllCaps="false"
@@ -166,22 +185,24 @@
             android:textSize="19sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ConfirmEditText" />
+            app:layout_constraintTop_toBottomOf="@+id/WebsiteEditText" />
 
         <TextView
             android:id="@+id/alreadyButton"
             android:layout_width="350dp"
             android:layout_height="60dp"
-            android:gravity="center"
             android:layout_marginStart="104dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="105dp"
-            android:fontFamily="@font/lato_bold"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/yellow_round"
+            android:fontFamily="@font/lato_bold"
+            android:gravity="center"
             android:text="Already have An Account"
             android:textColor="@color/maincolor"
             android:textSize="18sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/signUp_button" />

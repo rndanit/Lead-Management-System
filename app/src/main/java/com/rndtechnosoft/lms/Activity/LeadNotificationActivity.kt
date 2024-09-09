@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -31,9 +32,7 @@ class LeadNotificationActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var progressBarTextView: TextView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private var notificationList: MutableList<NotificationResponseItem> = mutableListOf()
     private var ids: String? = null
-
 
     @SuppressLint("MissingInflatedId")
     @RequiresApi(Build.VERSION_CODES.M)
@@ -44,10 +43,10 @@ class LeadNotificationActivity : AppCompatActivity() {
         // Force light mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        //Find the Id of UI Components.
-        progressBar=findViewById(R.id.progressBar)
-        progressBarTextView=findViewById(R.id.progressTextview)
-        swipeRefreshLayout=findViewById(R.id.swipeRefreshLayout)
+        // Find the Id of UI Components.
+        progressBar = findViewById(R.id.progressBar)
+        progressBarTextView = findViewById(R.id.progressTextview)
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -64,7 +63,6 @@ class LeadNotificationActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
-
 
         // Show progress bar and text
         progressBarTextView.visibility = View.VISIBLE
@@ -84,85 +82,123 @@ class LeadNotificationActivity : AppCompatActivity() {
         notificationLeads()
     }
 
-    //Notification Function.
+    // Notification Function
     private fun notificationLeads() {
         val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val token = sharedPreferences.getString("token", null)
         val userId = sharedPreferences.getString("userId", null)
+        val managerId = sharedPreferences.getString("managerId", null)
+        val role = sharedPreferences.getString("role", null)
+
         Log.d("Token", "fetchLeads: $token")
         Log.d("User Id", "fetchLeads: $userId")
+        Log.d("Manager Id", "fetchLeads: $managerId")
+        Log.d("Role", "fetchLeads: $role")
 
         if (token != null) {
-            RetrofitInstance.apiInterface.notification("Bearer $token").enqueue(object : Callback<MutableList<NotificationResponseItem>> {
-                override fun onResponse(call: Call<MutableList<NotificationResponseItem>>, response: Response<MutableList<NotificationResponseItem>>) {
-                    Log.d("API Response", "Response code: ${response.code()}")
-                    if (response.isSuccessful && response.body() != null) {
-                        val notifications = response.body()!!
-                        Log.d("NotificationActivity", "Fetched Notifications: $notifications")
+            val idToPass: String? = when (role) {
+                "user" -> userId
+                "Manager" -> managerId
+                else -> null
+            }
 
-                        // Store _id values of a Notification Id.
-                        ids = notifications.map { it._id }.toString()
-                        Log.d("NotificationActivity", "Notification IDs: $ids")
+            if (idToPass != null) {
+                Log.d("NotificationActivity", "Manager id: $idToPass")
 
-                        // Save the ids in SharedPreferences
-                        //sharedPreferences.edit().putString("notification_ids", ids).apply()
+                RetrofitInstance.apiInterface.notification("Bearer $token", id = idToPass)
+                    .enqueue(object : Callback<MutableList<NotificationResponseItem>> {
+                        override fun onResponse(
+                            call: Call<MutableList<NotificationResponseItem>>,
+                            response: Response<MutableList<NotificationResponseItem>>
+                        ) {
+                            Log.d("API Response", "Response code: ${response.code()}")
 
+                            // Hide the progress bar and swipe refresh loader
+                            progressBarTextView.visibility = View.GONE
+                            progressBar.visibility = View.GONE
+                            swipeRefreshLayout.isRefreshing = false
 
-                        // Sort the notifications by `createdAt` in descending order
-                        notifications.sortByDescending { it.createdAt } // Replace `createdAt` with the correct field name
+                            if (response.isSuccessful && response.body() != null) {
+                                val notifications = response.body()!!
+                                Log.d(
+                                    "NotificationActivity",
+                                    "Fetched Notifications: $notifications"
+                                )
+                                Log.d("NotificationActivity", "Status id: $idToPass")
 
+                                // Store _id values of Notification Id.
+                                ids = notifications.map { it._id }.toString()
+                                Log.d("NotificationActivity", "Notification IDs: $ids")
 
-                        // Hide the progress bar and text
-                        progressBarTextView.visibility = View.GONE
-                        progressBar.visibility = View.GONE
-                        swipeRefreshLayout.isRefreshing = false
+                                // Sort the notifications by `createdAt` in descending order
+                                notifications.sortByDescending { it.createdAt }
 
+                                if (notifications.isEmpty()) {
+                                    // Show "No Notifications Available" and bell icon
+                                    noNotificationsTextView.visibility = View.VISIBLE
+                                    noNotificationsImageView.visibility = View.VISIBLE
+                                    recyclerView.visibility = View.GONE
+                                } else {
+                                    // Load the notifications into the RecyclerView
+                                    adapter = NotificationAdapter(applicationContext, notifications)
+                                    recyclerView.adapter = adapter
 
-                        if (notifications.isEmpty()) {
-                            // Show "No Notifications Available" and bell icon
+                                    // Hide the "No Notifications Available" and bell icon
+                                    noNotificationsTextView.visibility = View.GONE
+                                    noNotificationsImageView.visibility = View.GONE
+                                    recyclerView.visibility = View.VISIBLE
+                                }
+
+                            } else {
+                                val errorBody = response.errorBody()?.string()
+                                Log.e(
+                                    "NotificationActivity",
+                                    "Response failed: ${response.code()} - ${response.message()} - $errorBody"
+                                )
+
+                                // Handle empty or failed responses
+                                noNotificationsTextView.visibility = View.VISIBLE
+                                noNotificationsImageView.visibility = View.VISIBLE
+                                recyclerView.visibility = View.GONE
+                            }
+                        }
+
+                        override fun onFailure(
+                            call: Call<MutableList<NotificationResponseItem>>,
+                            t: Throwable
+                        ) {
+                            Log.e("NotificationActivity", "API call failed", t)
+
+                            // Hide progress bar and show error state
+                            progressBarTextView.visibility = View.GONE
+                            progressBar.visibility = View.GONE
+                            swipeRefreshLayout.isRefreshing = false
+
+                            // Handle failure by showing error or retry options
                             noNotificationsTextView.visibility = View.VISIBLE
                             noNotificationsImageView.visibility = View.VISIBLE
                             recyclerView.visibility = View.GONE
-                        } else {
-                            // Load the notifications into the RecyclerView
-                            adapter = NotificationAdapter(applicationContext,notifications)
-                            recyclerView.adapter = adapter
-
-
-                            // Hide the "No Notifications Available" and bell icon
-                            noNotificationsTextView.visibility = View.GONE
-                            noNotificationsImageView.visibility = View.GONE
-                            recyclerView.visibility = View.VISIBLE
                         }
-
-                    } else {
-                        val errorBody = response.errorBody()?.string()
-                        Log.e("NotificationActivity", "Response failed or empty: ${response.code()} - ${response.message()} - $errorBody")
-                        Log.e("NotificationActivity", "Raw JSON response: ${response.errorBody()?.string()}")
-
-                        // Handle failure
-                        progressBarTextView.visibility = View.GONE
-                        progressBar.visibility = View.GONE
-                        swipeRefreshLayout.isRefreshing = false
-                        noNotificationsImageView.visibility = View.VISIBLE
-                        noNotificationsTextView.visibility=View.VISIBLE
-
-                    }
-                }
-
-                override fun onFailure(call: Call<MutableList<NotificationResponseItem>>, t: Throwable) {
-                    Log.e("NotificationActivity", "API call failed", t)
-                }
-            })
+                    })
+            } else {
+                Log.e("NotificationActivity", "Role is invalid or ID is null")
+                // Handle case where ID is null
+                noNotificationsTextView.visibility = View.VISIBLE
+                noNotificationsImageView.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+            }
         } else {
-            Log.e("NotificationActivity", "Token or User ID is null")
+            Log.e("NotificationActivity", "Token or Role is null")
+            // Handle case where token or role is null
+            noNotificationsTextView.visibility = View.VISIBLE
+            noNotificationsImageView.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
         }
     }
+
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
     }
-
-
 }

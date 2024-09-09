@@ -12,23 +12,26 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.rndtechnosoft.lms.Activity.Api.RetrofitInstance
-import com.rndtechnosoft.lms.Activity.DataModel.DataX
-import com.rndtechnosoft.lms.Activity.DataModel.UpdaredleadRequest
-import com.rndtechnosoft.lms.Activity.DataModel.UpdatedLeadResponse
+import com.rndtechnosoft.lms.Activity.DataModel.*
 import com.rndtechnosoft.lms.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.reflect.KFunction6
 
 class StatusAdapter(
     private val context: Context,
-    private val leads: List<DataX>,
+    private val leads: MutableList<DataX>,
     private val cardColor: Int,
     private val textColor: Int
 ) : RecyclerView.Adapter<StatusAdapter.StatusViewHolder>() {
 
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+    private val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
     private val token: String? = sharedPreferences.getString("token", null)
+    private val userId: String? = sharedPreferences.getString("userId", null)
+    val managerId = sharedPreferences.getString("managerId", null)
+    val role = sharedPreferences.getString("role", null)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StatusViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_lead, parent, false)
@@ -44,45 +47,136 @@ class StatusAdapter(
         // Apply the passed colors
         holder.statusCardView.setCardBackgroundColor(cardColor)
         holder.statusText.setTextColor(textColor)
+
+        // Set up click listener for statusCardView to show drop-down list
+        holder.statusCardView.setOnClickListener {
+            if (userId != null) {
+                fetchStatusTypes(holder.statusText, token,role ,userId, managerId,position)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
         return leads.size
     }
 
-    private fun statusUpdate(statusText: TextView, token: String?, notificationId: String?, newStatus: String) {
-        if (token != null && notificationId != null) {
+    private fun fetchStatusTypes(statusText: TextView, token: String?, role: String?, userId: String?, managerId: String?, position: Int) {
+        if (token != null && role != null) {
+            // Determine the correct ID based on the role
+            val id = when (role) {
+                "user" -> userId
+                "Manager" -> managerId
+                else -> null // Handle invalid roles or roles that are not "User" or "Manager"
+            }
 
-            val request=UpdaredleadRequest(status = newStatus)
-            RetrofitInstance.apiInterface.statusUpdate("Bearer $token", notificationId,request).enqueue(object : Callback<UpdatedLeadResponse> {
-                override fun onResponse(call: Call<UpdatedLeadResponse>, response: Response<UpdatedLeadResponse>) {
-                    if (response.isSuccessful) {
-                        Toast.makeText(context, "Status updated to $newStatus", Toast.LENGTH_SHORT).show()
-                        statusText.text = newStatus // Confirm the update on a successful API call
-                    } else {
-                        val errorMessage = "Failed to update status: ${response.code()} ${response.message()}"
-                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-                        Log.e("StatusUpdate", errorMessage)
-                        response.errorBody()?.let { errorBody ->
-                            Log.e("StatusUpdate", "Error body: ${errorBody.string()}")
+            if (id != null) {
+                RetrofitInstance.apiInterface.statusCard("Bearer $token", id)
+                    .enqueue(object : Callback<StatusTypeResponse> {
+                        override fun onResponse(
+                            call: Call<StatusTypeResponse>,
+                            response: Response<StatusTypeResponse>
+                        ) {
+                            if (response.isSuccessful) {
+                                response.body()?.data?.let { statusTypes ->
+                                    showPopupMenu(statusText, statusTypes, token, id, position, this@StatusAdapter, leads)
+                                    Log.d("StatusCardResponse", "onResponse: {${response.body()}}")
+                                }
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Failed to fetch status types",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<StatusTypeResponse>, t: Throwable) {
+                            val errorMessage = "Error fetching status types: ${t.message}"
+                            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                            Log.e("StatusUpdate", errorMessage, t)
+                        }
+                    })
+            } else {
+                Toast.makeText(context, "Invalid role or ID not found", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(context, "Token or role not found", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showPopupMenu(
+        statusText: TextView,
+        statusTypes: List<DataXXX>,
+        token: String?,
+        userId: String,
+        position: Int,
+        adapter: StatusAdapter, // Pass the adapter to update the UI
+        leads: MutableList<DataX>
+    ) {
+        val popupMenu = PopupMenu(context, statusText)
+        statusTypes.forEach { statusType ->
+            popupMenu.menu.add(statusType.status_type)
+        }
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            val newStatus = menuItem.title.toString()
+            statusUpdate(statusText, token, position, newStatus, this@StatusAdapter, leads)
+            true
+        }
+        popupMenu.show()
+    }
+
+    private fun statusUpdate(
+        statusText: TextView,
+        token: String?,
+        position: Int,
+        newStatus: String,
+        adapter: StatusAdapter, // Pass the adapter to update the UI
+        leads: MutableList<DataX> // Pass the data source
+    ) {
+        val lead = leads[position]
+        val statusId = lead._id // Assuming '_id' is the correct field for status ID
+        if (token != null && statusId != null) {
+            val request = UpdaredleadRequest(status = newStatus)
+
+            RetrofitInstance.apiInterface.statusUpdate("Bearer $token", id = statusId, request)
+                .enqueue(object : Callback<UpdatedLeadResponse> {
+                    override fun onResponse(
+                        call: Call<UpdatedLeadResponse>,
+                        response: Response<UpdatedLeadResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            //Toast.makeText( context, "Status updated to $newStatus", Toast.LENGTH_SHORT ).show()
+                            statusText.text = newStatus
+
+                            // Update the data source and notify the adapter
+                            leads.removeAt(position)
+                            this@StatusAdapter.notifyItemRemoved(position)
+                            this@StatusAdapter.notifyItemRangeChanged(position, leads.size)
+                        } else {
+                            val errorMessage =
+                                "Failed to update status: ${response.code()} ${response.message()}"
+                            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                            Log.e("StatusUpdate", errorMessage)
+                            response.errorBody()?.let { errorBody ->
+                                Log.e("StatusUpdate", "Error body: ${errorBody.string()}")
+                            }
                         }
                     }
-                }
 
-                override fun onFailure(call: Call<UpdatedLeadResponse>, t: Throwable) {
-                    val errorMessage = "Error updating status: ${t.message}"
-                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-                    Log.e("StatusUpdate", errorMessage, t)
-                }
-            })
+                    override fun onFailure(call: Call<UpdatedLeadResponse>, t: Throwable) {
+                        val errorMessage = "Error updating status: ${t.message}"
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                        Log.e("StatusUpdate", errorMessage, t)
+                    }
+                })
         } else {
-            Toast.makeText(context, "Token or Notification ID not found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Token or Status ID not found", Toast.LENGTH_SHORT).show()
         }
     }
 
     class StatusViewHolder(
         itemView: View,
-        private val statusUpdateCallback: (TextView, String?, String?, String) -> Unit,
+        private val statusUpdateCallback: KFunction6<TextView, String?, Int, String, StatusAdapter, MutableList<DataX>, Unit>,
         private val token: String?
     ) : RecyclerView.ViewHolder(itemView) {
         private val nameTextView: TextView = itemView.findViewById(R.id.name)
@@ -104,43 +198,17 @@ class StatusAdapter(
                 leadInfoTextView.text = lead.leadInfo
                 leadDetailTextView.text = lead.leadsDetails
                 companyTextView.text = lead.companyname
+                emailTextView.text=lead.email
             } else {
                 // For Type 2 notifications
                 nameTextView.text = lead.name
                 mobileNumberTextView.text = lead.phone
-                leadInfoTextView.text = lead.subject
+                leadInfoTextView.text = "Own Website"
                 leadDetailTextView.text = lead.message
                 leaddetailnew.text = "Message:"
                 companynamenew.visibility = View.GONE
+                emailTextView.text=lead.email
             }
-
-            // Common fields
-            emailTextView.text = lead.email ?: "No Email"
-            statusText.text = lead.status
-
-            // Set up the statusCardView click listener to show a popup menu
-            statusCardView.setOnClickListener { view ->
-                showStatusPopupMenu(view, statusText, lead._id, position)
-            }
-        }
-
-        private fun showStatusPopupMenu(view: View, statusText: TextView, notificationId: String, position: Int) {
-            val popupMenu = PopupMenu(view.context, view)
-            popupMenu.menuInflater.inflate(R.menu.status_menu, popupMenu.menu)
-
-            popupMenu.setOnMenuItemClickListener { menuItem ->
-                val newStatus = when (menuItem.itemId) {
-                    R.id.option_new -> "New"
-                    R.id.option_in_progress -> "In Progress"
-                    R.id.option_completed -> "Completed"
-                    else -> return@setOnMenuItemClickListener false
-                }
-                statusText.text = newStatus // Immediately update the TextView
-                statusUpdateCallback(statusText, token, notificationId, newStatus)
-                true
-            }
-
-            popupMenu.show()
         }
     }
 }

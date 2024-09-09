@@ -3,22 +3,17 @@ package com.rndtechnosoft.lms.Activity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
 import android.text.InputType
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatButton
-import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rndtechnosoft.lms.Activity.Api.RetrofitInstance
 import com.rndtechnosoft.lms.Activity.DataModel.UserLoginRequest
@@ -36,8 +31,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private var isPasswordVisible: Boolean = false
     private var deviceTokens: String? = null
+    private lateinit var forgetPassword:TextView
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -55,8 +51,15 @@ class LoginActivity : AppCompatActivity() {
         //Find the Id of a UI Components.
         emailEditText = findViewById(R.id.EmailEditText)
         passwordEditText = findViewById(R.id.passwordEditText)
+        forgetPassword=findViewById(R.id.forgetPassword)
 
         progressBar = findViewById(R.id.progressBar) // Find ProgressBar
+
+        //Functionality of Forget password.
+        forgetPassword.setOnClickListener {
+            val intent=Intent(this@LoginActivity,ForgetPasswordActivity::class.java)
+            startActivity(intent)
+        }
 
 
         //Device Token Functionality(Generate a Device Token).
@@ -133,6 +136,8 @@ class LoginActivity : AppCompatActivity() {
         val email = emailEditText.text.toString().trim()
         val password = passwordEditText.text.toString().trim()
 
+
+
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(
                 this@LoginActivity,
@@ -173,11 +178,13 @@ class LoginActivity : AppCompatActivity() {
                             navigateToMainActivity()
 
                             // Store the token in SharedPreferences
-                            val sharedPreferences =
-                                getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                            val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
                             val editor = sharedPreferences.edit()
                             editor.putString("token", loginResponse.token)
-                            editor.putString("userId", loginResponse.id)
+                            editor.putString("userId", loginResponse.user.id)
+                            editor.putString("managerId",loginResponse.user.associatedUserId)
+                            editor.putString("role",loginResponse.user.role)
+                            editor.putString("userPassword",password)
                             editor.putBoolean("isLoggedIn", true)  // User logged in
                             editor.apply()
 
@@ -208,18 +215,6 @@ class LoginActivity : AppCompatActivity() {
             })
     }
 
-    /*
-    private fun saveUserData(loginResponse: UserLoginResponse) {
-        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-        with(sharedPreferences.edit()) {
-            putString("token", loginResponse.token)
-            putString("userId", loginResponse.id)
-            putBoolean("isLoggedIn", true)
-            apply()
-        }
-    }
-
-     */
 
     private fun navigateToMainActivity() {
         startActivity(Intent(this@LoginActivity, MainActivity::class.java))

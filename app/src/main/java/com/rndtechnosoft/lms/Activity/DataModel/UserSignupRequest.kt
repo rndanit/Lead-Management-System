@@ -5,5 +5,6 @@ data class UserSignupRequest(
     val email: String,
     val mobile: String,
     val name: String,
-    val password: String
+    val password: String,
+    val website:String
 )

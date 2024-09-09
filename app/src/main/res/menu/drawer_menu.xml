@@ -14,7 +14,7 @@
         android:id="@+id/nav_lead"
         android:iconTint="@color/black"
         android:icon="@drawable/mainead"
-        android:title="Lead"/>
+        android:title="Update Status"/>
 
     <item
         android:id="@+id/nav_logout"

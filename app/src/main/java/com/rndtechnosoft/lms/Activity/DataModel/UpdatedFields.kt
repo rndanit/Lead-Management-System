@@ -8,5 +8,7 @@ data class UpdatedFields(
     @SerializedName("mobile") val mobile: String?,
     @SerializedName("photo") val photo: List<String?>,
     @SerializedName("status") val status: String?,
-    @SerializedName("updatedAt") val updatedAt: String?
+    @SerializedName("updatedAt") val updatedAt: String?,
+    @SerializedName("companyname") val companyname: String?,
+    @SerializedName("website") val website:List<String?>,
 )

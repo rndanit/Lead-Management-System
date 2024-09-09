@@ -7,19 +7,29 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageButton
+import android.view.MotionEvent
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
-import com.google.android.material.card.MaterialCardView
+import com.google.gson.Gson
 import com.rndtechnosoft.lms.Activity.Api.RetrofitInstance
 import com.rndtechnosoft.lms.Activity.DataModel.GetUserResponse
+import com.rndtechnosoft.lms.Activity.DataModel.UpdatedFields
+import com.rndtechnosoft.lms.Activity.DataModel.emailRequest
+import com.rndtechnosoft.lms.Activity.DataModel.nameRequest
+import com.rndtechnosoft.lms.Activity.DataModel.numberRequest
 import com.rndtechnosoft.lms.R
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,6 +39,8 @@ class UserProfileActivity : AppCompatActivity() {
     private lateinit var profileUserName: TextView
     private lateinit var profileUserEmail: TextView
     private lateinit var profileUserMobile: TextView
+    private lateinit var profileCompanyname:TextView
+    private lateinit var profileWebsite:TextView
     private lateinit var editProfile:ImageView
     private lateinit var logoutButton:CardView
     private lateinit var profileImage:ImageView
@@ -42,15 +54,30 @@ class UserProfileActivity : AppCompatActivity() {
         // Force light mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
+
         profileUserName=findViewById(R.id.profileUserName)
         profileUserEmail=findViewById(R.id.profileEmail)
         profileUserMobile=findViewById(R.id.profileNumber)
+        profileCompanyname=findViewById(R.id.companyName)
+        profileWebsite=findViewById(R.id.profileWebsite)
         editProfile=findViewById(R.id.editProfileButton)
         logoutButton=findViewById(R.id.logoutAccount)
         profileImage=findViewById(R.id.mainProfileImage)
 
+        val swipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
+
+        swipeRefreshLayout.setOnRefreshListener {
+            // Refresh logic here
+            // Once the refresh is complete, call setRefreshing(false) to stop the animation
+            swipeRefreshLayout.isRefreshing = false
+            fetchUserDetails()
+        }
+
+
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+
 
         // Customize the toolbar
         //supportActionBar?.title = "Profile" // Set the toolbar title
@@ -68,27 +95,6 @@ class UserProfileActivity : AppCompatActivity() {
         }
 
 
-        // Set the toolbar background color (optional)
-        //toolbar.setBackgroundColor(getColor(R.drawable.gradientcolor))
-
-        // Retrieve user details from SharedPreferences
-        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-        val name = sharedPreferences.getString("name", "Default Name")
-        val email = sharedPreferences.getString("email", "Default Email")
-        val mobile = sharedPreferences.getString("mobile", "Default Mobile")
-        val photoUrl=sharedPreferences.getString("photo","Default Photo")
-
-        Log.d("PhotoURL", "onCreate: PhotoUrl:-${photoUrl}")
-
-        // Set the user details in the UI
-        profileUserName.text = name
-        profileUserEmail.text = email
-        profileUserMobile.text = mobile
-
-        // Load the profile image using Glide
-        Glide.with(this)
-            .load(photoUrl)
-            .into(profileImage)
 
 
         //Set the click on listner to edit profile button.
@@ -102,67 +108,130 @@ class UserProfileActivity : AppCompatActivity() {
             showLogoutConfirmationDialog()
         }
         fetchUserDetails()
+
     }
+
 
     // FetchUserDetails Function
     private fun fetchUserDetails() {
         val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val token = sharedPreferences.getString("token", null)
         val userId = sharedPreferences.getString("userId", null)
-        if (userId != null) {
-            RetrofitInstance.apiInterface.getUser("Bearer $token", userId)
-                .enqueue(object : Callback<GetUserResponse> {
-                    override fun onResponse(
-                        call: Call<GetUserResponse>,
-                        response: Response<GetUserResponse>
-                    ) {
-                        if (response.isSuccessful) {
-                            val user = response.body()
-                            if (user != null) {
-                                profileUserName.text = user.name
-                                profileUserEmail.text = user.email
-                                profileUserMobile.text=user.mobile
+        val role = sharedPreferences.getString("role", null)
+
+        if (userId != null && token != null) {
+            when (role) {
+                "user" -> {
+                    // Call getUser function
+                    RetrofitInstance.apiInterface.getUser("Bearer $token", id = userId)
+                        .enqueue(object : Callback<GetUserResponse> {
+                            override fun onResponse(
+                                call: Call<GetUserResponse>,
+                                response: Response<GetUserResponse>
+                            ) {
+                                if (response.isSuccessful) {
+                                    val user = response.body()
+                                    if (user != null) {
+                                        profileUserName.text = user.name
+                                        profileUserEmail.text = user.email
+                                        profileUserMobile.text=user.mobile
+                                        profileCompanyname.text=user.companyname
+                                        profileWebsite.text = user.website.firstOrNull()
+
+                                        // Base URL
+                                        val baseUrl = "https://leads.rndtechnosoft.com/api/image/download/"
+
+                                        // Complete photo URL
+                                        val photoUrl: String = baseUrl + user.photo.firstOrNull()
+
+                                        Log.d("Photo URL", "onResponse: $photoUrl")
+
+                                        // Load the profile image using Glide
+
+                                        Glide.with(this@UserProfileActivity)
+                                            .load(photoUrl)
+                                            .placeholder(R.drawable.user) // Show default image while loading
+                                            .error(R.drawable.user)
+                                            .into(profileImage)
 
 
 
-                                // Base URL
-                                val baseUrl = "https://leads.rndtechnosoft.com/api/image/download/"
-
-                                // Complete photo URL
-                                val photoUrl: String = baseUrl + user.photo.firstOrNull()
-
-                                Glide.with(applicationContext).load(photoUrl).into(profileImage)
-
-                                Log.d("Photo URL", "onResponse: $photoUrl")
-
-                                // Store user details in SharedPreferences
-                                val editor = sharedPreferences.edit()
-                                editor.putString("name", user.name)
-                                editor.putString("email", user.email)
-                                editor.putString("mobile", user.mobile)
-                                editor.putString("photo", photoUrl)
-                                editor.apply()
-
-                            } else {
-                                Log.e("API Error", "Empty response body")
+                                    } else {
+                                        Log.e("API Error", "Empty response body")
+                                    }
+                                } else {
+                                    Log.e(
+                                        "API Error",
+                                        "Failed to get user detail: ${response.message()} - ${
+                                            response.errorBody()?.string()
+                                        }"
+                                    )
+                                }
                             }
-                        } else {
-                            Log.e(
-                                "API Error",
-                                "Failed to get user detail: ${response.message()} - ${
-                                    response.errorBody()?.string()
-                                }"
-                            )
-                        }
-                    }
 
-                    override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
-                        Log.e("API Error", "Failed to get user details: ${t.message}")
-                    }
-                })
+                            override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
+                                Log.e("API Error", "Failed to get user details: ${t.message}")
+                            }
+                        })
+                }
+                "Manager" -> {
+                    // Call getManager function
+                    RetrofitInstance.apiInterface.getManager("Bearer $token", id = userId)
+                        .enqueue(object : Callback<GetUserResponse> {
+                            override fun onResponse(
+                                call: Call<GetUserResponse>,
+                                response: Response<GetUserResponse>
+                            ) {
+                                if (response.isSuccessful) {
+                                    val manager = response.body()
+                                    if (manager != null) {
+                                        profileUserName.text = manager.name
+                                        profileUserEmail.text = manager.email
+                                        profileUserMobile.text=manager.mobile
+                                        profileCompanyname.text=manager.companyname
+                                        profileWebsite.text = manager.website.firstOrNull()
+
+                                        // Base URL
+                                        val baseUrl = "https://leads.rndtechnosoft.com/api/image/download/"
+
+                                        // Complete photo URL
+                                        val photoUrl: String = baseUrl + manager.photo.firstOrNull()
+
+                                        Log.d("Photo URL", "onResponse: $photoUrl")
+
+                                        // Load the profile image using Glide
+                                        Glide.with(this@UserProfileActivity)
+                                            .load(photoUrl)
+                                            .placeholder(R.drawable.user) // Show default image while loading
+                                            .error(R.drawable.user)
+                                            .into(profileImage)
+
+                                    } else {
+                                        Log.e("API Error", "Empty response body")
+                                    }
+                                } else {
+                                    Log.e(
+                                        "API Error",
+                                        "Failed to get manager detail: ${response.message()} - ${
+                                            response.errorBody()?.string()
+                                        }"
+                                    )
+                                }
+                            }
+
+                            override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
+                                Log.e("API Error", "Failed to get manager details: ${t.message}")
+                            }
+                        })
+                }
+                else -> {
+                    Log.e("API Error", "Unknown role: $role")
+                }
+            }
+        } else {
+            Log.e("API Error", "User ID or token is null")
         }
     }
-
 
     // Alert Box Functionality
     private fun showLogoutConfirmationDialog() {
@@ -209,6 +278,7 @@ class UserProfileActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         fetchUserDetails()
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

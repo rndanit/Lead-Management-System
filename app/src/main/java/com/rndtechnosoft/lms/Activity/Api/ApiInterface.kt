@@ -3,10 +3,20 @@ package com.rndtechnosoft.lms.Activity.Api
 
 import com.rndtechnosoft.lms.Activity.DataModel.AddLeadRequest
 import com.rndtechnosoft.lms.Activity.DataModel.AddLeadResponse
+import com.rndtechnosoft.lms.Activity.DataModel.AddStatusRequest
+import com.rndtechnosoft.lms.Activity.DataModel.AddStatusResponse
+import com.rndtechnosoft.lms.Activity.DataModel.DataXXX
+import com.rndtechnosoft.lms.Activity.DataModel.EditStatusRequest
+import com.rndtechnosoft.lms.Activity.DataModel.EditStatusResponse
+import com.rndtechnosoft.lms.Activity.DataModel.ForgetRequest
+import com.rndtechnosoft.lms.Activity.DataModel.ForgetResponse
 import com.rndtechnosoft.lms.Activity.DataModel.GetUserResponse
 import com.rndtechnosoft.lms.Activity.DataModel.NotificationResponseItem
+import com.rndtechnosoft.lms.Activity.DataModel.RestRequest
+import com.rndtechnosoft.lms.Activity.DataModel.RestResponse
 import com.rndtechnosoft.lms.Activity.DataModel.ShowLeadResponseItem
 import com.rndtechnosoft.lms.Activity.DataModel.StatusResponse
+import com.rndtechnosoft.lms.Activity.DataModel.StatusTypeResponse
 import com.rndtechnosoft.lms.Activity.DataModel.UpdaredleadRequest
 import com.rndtechnosoft.lms.Activity.DataModel.UpdatedFields
 import com.rndtechnosoft.lms.Activity.DataModel.UpdatedLeadResponse
@@ -14,7 +24,10 @@ import com.rndtechnosoft.lms.Activity.DataModel.UserLoginRequest
 import com.rndtechnosoft.lms.Activity.DataModel.UserLoginResponse
 import com.rndtechnosoft.lms.Activity.DataModel.UserSignupRequest
 import com.rndtechnosoft.lms.Activity.DataModel.UserSignupResponse
+import com.rndtechnosoft.lms.Activity.DataModel.emailRequest
 import com.rndtechnosoft.lms.Activity.DataModel.leadSourceResponseItem
+import com.rndtechnosoft.lms.Activity.DataModel.nameRequest
+import com.rndtechnosoft.lms.Activity.DataModel.numberRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -55,10 +68,11 @@ interface ApiInterface {
 
     //GetUserById Endpoint.
     @GET("user/getUserByUserId")
-    fun getUser(
-        @Header("Authorization") token: String,
-        @Query("id") id: String
-    ): Call<GetUserResponse>
+    fun getUser(@Header("Authorization") token: String, @Query("id") id: String): Call<GetUserResponse>
+
+    //GetManagerById Endpoint.
+    @GET("manager/getManagerById")
+    fun getManager(@Header("Authorization") token: String, @Query("id") id: String): Call<GetUserResponse>
 
     //Update Profile EndPoint.
     @Multipart
@@ -68,14 +82,62 @@ interface ApiInterface {
         @Part("name") name: RequestBody,
         @Part("email") email: RequestBody,
         @Part("mobile") mobile:RequestBody,
-        @Part photo: MultipartBody.Part
+        @Part("password")password:RequestBody,
+        @Part("companyname")companyname:RequestBody,
+        @Part("website")website:RequestBody,
+        @Part photo: MultipartBody.Part,
+        @Query("id") id:String,
     ): Call<UpdatedFields>
+
+    @Multipart
+    @PUT("user/updateUserById")
+    fun updateProfileData(
+        @Header("Authorization") token: String,
+        @Part("name") name: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("mobile") mobile:RequestBody,
+        @Part("password")password:RequestBody,
+        @Part("companyname")companyname:RequestBody,
+        @Part("website")website:RequestBody,
+        @Query("id") id:String,
+    ): Call<UpdatedFields>
+
+    //Manager Update profile Endpoint.
+    @Multipart
+    @PUT("manager/updateManager")
+    fun updateProfileManager(
+        @Header("Authorization") token: String,
+        @Part("name") name: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("mobile") mobile:RequestBody,
+        @Part("password")password:RequestBody,
+        @Part("companyname")companyname:RequestBody,
+        @Part("website")website:RequestBody,
+        @Part photo: MultipartBody.Part,
+        @Query("id") id:String,
+
+    ): Call<UpdatedFields>
+
+    @Multipart
+    @PUT("manager/updateManager")
+    fun updateProfileManagerData(
+        @Header("Authorization") token: String,
+        @Part("name") name: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("mobile") mobile:RequestBody,
+        @Part("password")password:RequestBody,
+        @Part("companyname")companyname:RequestBody,
+        @Part("website")website:RequestBody,
+        @Query("id") id:String,
+
+        ): Call<UpdatedFields>
+
 
 
 
     //Notification EndPoint.
     @GET("notification/getNotification")
-    fun notification(@Header("Authorization") token: String): Call<MutableList<NotificationResponseItem>>
+    fun notification(@Header("Authorization") token: String, @Query("id") id: String): Call<MutableList<NotificationResponseItem>>
 
     //Notification AddLead or CancelLead EndPoint.
     @PUT("notification/updateIsExcept")
@@ -92,5 +154,30 @@ interface ApiInterface {
     //Lead Source Item Endpoint.
     @GET("leadSource/getAllLeadSources")
     fun leadSource(@Header("Authorization")  token: String) :Call<MutableList<leadSourceResponseItem>>
+
+    //StatusType EndPoint.
+    @GET("statusType/getAllStatus")
+    fun statusType(@Header("Authorization") token: String,@Query("userId") userId:String) :Call<MutableList<DataXXX>>
+
+    //status card
+    @GET("statusType/getStatusTypeByUser")
+    fun statusCard(@Header("Authorization") token: String,@Query("userId") userId:String) :Call<StatusTypeResponse>
+
+    //Forget Password Endpoint.
+    @POST("user/forgotPassword")
+    fun forgetFunction(@Body request: ForgetRequest) :Call<ForgetResponse>
+
+    //Rest Password Endpoint.
+    @POST("user/resetPassword")
+    fun restFunction(@Body request: RestRequest):Call<RestResponse>
+
+    //Add Status Api Endpoint.
+    @POST("statusType/adduserStatusAdmin")
+    fun addFunction(@Header("Authorization") token: String,@Query("user") user:String,@Body request: AddStatusRequest): Call<AddStatusResponse>
+
+    //Edit Status Endpoint.
+    @PUT("statusType/updateUserStatusType")
+    fun editStatus(@Header("Authorization") token: String,@Query("id") id:String,@Body request: EditStatusRequest ):Call<EditStatusResponse>
+
 }
 

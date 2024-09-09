@@ -62,8 +62,8 @@ class NotificationAdapter(
         private val leadInfoTextView: TextView = itemView.findViewById(R.id.LeadSources)
         private val leadDetailTextView: TextView = itemView.findViewById(R.id.lead_detail)
         private val statusTextView: TextView = itemView.findViewById(R.id.statusText)
-        private val addLeadButton: Button = itemView.findViewById(R.id.add_notification)
-        private val cancelButton: TextView = itemView.findViewById(R.id.cancel_notification)
+       // private val addLeadButton: Button = itemView.findViewById(R.id.add_notification)
+        //private val cancelButton: TextView = itemView.findViewById(R.id.cancel_notification)
         private val progressBar: ProgressBar = itemView.findViewById(R.id.progress_loader)
         private val leaddetailnew: TextView = itemView.findViewById(R.id.leadDetail)
         private val companynamenew: CardView = itemView.findViewById(R.id.comapny_name)
@@ -91,6 +91,7 @@ class NotificationAdapter(
             emailTextView.text = notification.email ?: "No Email"
             statusTextView.text = notification.status ?: "No Status"
 
+            /*
             addLeadButton.setOnClickListener {
                 if (token != null) {
                     progressBar.visibility = View.VISIBLE
@@ -112,6 +113,9 @@ class NotificationAdapter(
                         .show()
                 }
             }
+        }
+
+             */
         }
 
         private fun performApiAction(id: String?, isAccept: Boolean) {

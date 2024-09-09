@@ -217,40 +217,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/leadDetail" />
 
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/add_notification"
-                android:layout_width="145dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="38dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/processedbuttonshape"
-                android:backgroundTint="@color/maincolor"
-                android:text="+  Add Lead"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="19sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lead_detail" />
-
-            <TextView
-                android:id="@+id/cancel_notification"
-                android:layout_width="145dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="38dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/yellow_round"
-                android:gravity="center"
-                android:text="Cancel"
-                android:textStyle="bold"
-                android:textAllCaps="false"
-                android:textColor="@color/maincolor"
-                android:textSize="19sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lead_detail" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

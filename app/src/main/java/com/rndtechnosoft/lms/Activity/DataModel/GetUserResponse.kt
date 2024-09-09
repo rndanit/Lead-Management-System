@@ -12,5 +12,6 @@ data class GetUserResponse(
     val password: String,
     val photo: List<String>,
     val role: String,
-    val status: String
+    val status: String,
+    val website:List<String>
 )

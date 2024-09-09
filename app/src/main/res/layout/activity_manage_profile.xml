@@ -66,6 +66,7 @@
                         android:id="@+id/profileImageView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:scaleType="centerCrop"
                         android:layout_marginStart="46dp"
                         android:layout_marginTop="46dp"
                         android:layout_marginEnd="46dp"
@@ -168,15 +169,70 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/mobile" />
 
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="340dp"
+                android:layout_height="62dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:backgroundTint="#CECECE"
+                android:drawableLeft="@drawable/password_scaled"
+                android:drawablePadding="10dp"
+                android:hint="Password"
+                android:inputType="numberPassword"
+                android:padding="12dp"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/email" />
+
+            <EditText
+                android:id="@+id/company"
+                android:layout_width="340dp"
+                android:layout_height="62dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:backgroundTint="#CECECE"
+                android:drawableLeft="@drawable/company_scaled"
+                android:drawablePadding="10dp"
+                android:hint="Company Name"
+                android:inputType="text"
+                android:padding="12dp"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/password" />
+
+
+            <EditText
+                android:id="@+id/website"
+                android:layout_width="340dp"
+                android:layout_height="62dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:backgroundTint="#CECECE"
+                android:drawableLeft="@drawable/website_scaled"
+                android:drawablePadding="10dp"
+                android:hint="Website"
+                android:inputType="text"
+                android:padding="12dp"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/company" />
+
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/saveButton"
                 android:layout_width="180dp"
                 android:layout_height="60dp"
-                android:layout_marginStart="42dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="42dp"
                 android:background="@drawable/processedbuttonshape"
                 android:backgroundTint="@color/maincolor"
                 android:fontFamily="@font/lato_bold"
@@ -187,16 +243,16 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/CancelButton"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/email" />
+                app:layout_constraintTop_toBottomOf="@+id/website" />
 
             <TextView
                 android:id="@+id/CancelButton"
                 android:layout_width="180dp"
                 android:layout_height="60dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="42dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="52dp"
+                android:layout_marginBottom="42dp"
                 android:background="@drawable/yellow_round"
                 android:fontFamily="@font/lato_bold"
                 android:gravity="center"
@@ -207,7 +263,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/saveButton"
-                app:layout_constraintTop_toBottomOf="@+id/email" />
+                app:layout_constraintTop_toBottomOf="@+id/website" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
