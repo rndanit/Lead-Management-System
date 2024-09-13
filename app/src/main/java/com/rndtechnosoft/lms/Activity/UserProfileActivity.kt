@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -22,6 +23,7 @@ import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.rndtechnosoft.lms.Activity.Api.RetrofitInstance
 import com.rndtechnosoft.lms.Activity.DataModel.GetUserResponse
+import com.rndtechnosoft.lms.Activity.DataModel.ManagerResponse
 import com.rndtechnosoft.lms.Activity.DataModel.UpdatedFields
 import com.rndtechnosoft.lms.Activity.DataModel.emailRequest
 import com.rndtechnosoft.lms.Activity.DataModel.nameRequest
@@ -134,27 +136,30 @@ class UserProfileActivity : AppCompatActivity() {
                                     if (user != null) {
                                         profileUserName.text = user.name
                                         profileUserEmail.text = user.email
-                                        profileUserMobile.text=user.mobile
-                                        profileCompanyname.text=user.companyname
-                                        profileWebsite.text = user.website.firstOrNull()
+                                        profileUserMobile.text = user.mobile
+                                        profileCompanyname.text = user.companyname
+
+                                        // Check if the website is null or empty
+                                        if (user.website.isNullOrEmpty()) {
+                                            profileWebsite.visibility = View.GONE // Hide if null or empty
+                                        } else {
+                                            profileWebsite.text = user.website.firstOrNull()
+                                            profileWebsite.visibility = View.VISIBLE // Show if not null
+                                        }
 
                                         // Base URL
                                         val baseUrl = "https://leads.rndtechnosoft.com/api/image/download/"
-
                                         // Complete photo URL
                                         val photoUrl: String = baseUrl + user.photo.firstOrNull()
 
                                         Log.d("Photo URL", "onResponse: $photoUrl")
 
                                         // Load the profile image using Glide
-
                                         Glide.with(this@UserProfileActivity)
                                             .load(photoUrl)
                                             .placeholder(R.drawable.user) // Show default image while loading
                                             .error(R.drawable.user)
                                             .into(profileImage)
-
-
 
                                     } else {
                                         Log.e("API Error", "Empty response body")
@@ -177,23 +182,29 @@ class UserProfileActivity : AppCompatActivity() {
                 "Manager" -> {
                     // Call getManager function
                     RetrofitInstance.apiInterface.getManager("Bearer $token", id = userId)
-                        .enqueue(object : Callback<GetUserResponse> {
+                        .enqueue(object : Callback<ManagerResponse> {
                             override fun onResponse(
-                                call: Call<GetUserResponse>,
-                                response: Response<GetUserResponse>
+                                call: Call<ManagerResponse>,
+                                response: Response<ManagerResponse>
                             ) {
                                 if (response.isSuccessful) {
                                     val manager = response.body()
                                     if (manager != null) {
                                         profileUserName.text = manager.name
                                         profileUserEmail.text = manager.email
-                                        profileUserMobile.text=manager.mobile
-                                        profileCompanyname.text=manager.companyname
-                                        profileWebsite.text = manager.website.firstOrNull()
+                                        profileUserMobile.text = manager.mobile
+                                        profileCompanyname.text = manager.companyname
+
+                                        // Check if the website is null or empty
+                                        if (manager.website.isNullOrEmpty()) {
+                                            profileWebsite.visibility = View.GONE // Hide if null or empty
+                                        } else {
+                                            profileWebsite.text = manager.website
+                                            profileWebsite.visibility = View.VISIBLE // Show if not null
+                                        }
 
                                         // Base URL
                                         val baseUrl = "https://leads.rndtechnosoft.com/api/image/download/"
-
                                         // Complete photo URL
                                         val photoUrl: String = baseUrl + manager.photo.firstOrNull()
 
@@ -219,7 +230,7 @@ class UserProfileActivity : AppCompatActivity() {
                                 }
                             }
 
-                            override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
+                            override fun onFailure(call: Call<ManagerResponse>, t: Throwable) {
                                 Log.e("API Error", "Failed to get manager details: ${t.message}")
                             }
                         })

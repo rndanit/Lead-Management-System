@@ -79,7 +79,7 @@
                 android:drawableRight="@drawable/eye_scaled"
                 android:drawablePadding="10dp"
                 android:hint="Password"
-                android:inputType="numberPassword"
+                android:inputType="text"
                 android:padding="12dp"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -99,9 +99,11 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/login_button"
-                android:layout_width="350dp"
+                android:layout_width="325dp"
                 android:layout_height="60dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="62dp"
+                android:layout_marginEnd="24dp"
                 android:background="@drawable/processedbuttonshape"
                 android:backgroundTint="@color/maincolor"
                 android:fontFamily="@font/lato_bold"
@@ -115,9 +117,11 @@
 
             <TextView
                 android:id="@+id/DontButton"
-                android:layout_width="350dp"
+                android:layout_width="325dp"
                 android:layout_height="60dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
                 android:background="@drawable/yellow_round"
                 android:fontFamily="@font/lato_bold"
                 android:gravity="center"

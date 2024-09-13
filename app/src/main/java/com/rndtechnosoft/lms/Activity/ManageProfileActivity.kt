@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -279,8 +280,14 @@ class ManageProfileActivity : AppCompatActivity() {
                     email.setText(it.email)
                     mobileNo.setText(it.mobile)
                     companyName.setText(it.companyname)
-                    websiteName.setText(it.website.firstOrNull())
 
+                    // Check if the website is null or empty and hide the EditText accordingly
+                    if (it.website.isNullOrEmpty()) {
+                        websiteName.visibility = View.GONE // Hide the website EditText
+                    } else {
+                        websiteName.visibility = View.VISIBLE // Show the website EditText if not null or empty
+                        websiteName.setText(it.website.firstOrNull()) // Set the first website if available
+                    }
 
                     // Update SharedPreferences with the new data
                     val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
@@ -288,15 +295,14 @@ class ManageProfileActivity : AppCompatActivity() {
                         putString("name", it.name)
                         putString("email", it.email)
                         putString("mobile", it.mobile)
-                        putString("company",it.companyname)
-                        putString("website",it.website.firstOrNull())
+                        putString("company", it.companyname)
+                        putString("website", it.website.firstOrNull())
                         apply()
                     }
-                    // Show success dialog
 
+                    // Show success dialog
                     showSuccessDialog()
                     finish()
-
                 }
             } else {
                 val errorBody = response.errorBody()?.string()

@@ -19,6 +19,12 @@
         android:theme="@style/Theme.LMS"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.EditLeadActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.LeadSourceActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.EditStatusActivity"
             android:exported="false" />
         <activity

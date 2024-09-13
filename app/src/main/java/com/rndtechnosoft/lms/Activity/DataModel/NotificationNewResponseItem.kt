@@ -1,6 +1,6 @@
 package com.rndtechnosoft.lms.Activity.DataModel
 
-data class NotificationResponseItem(
+data class NotificationNewResponseItem(
     val __v: Int,
     val _id: String,
     val body: String,

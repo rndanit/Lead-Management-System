@@ -37,6 +37,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.rndtechnosoft.lms.Activity.Adapter.LeadsPagerAdapter
 import com.rndtechnosoft.lms.Activity.DataModel.DataXXX
+import com.rndtechnosoft.lms.Activity.DataModel.ManagerResponse
 import com.rndtechnosoft.lms.Activity.DataModel.StatusTypeResponse
 
 class MainActivity : AppCompatActivity() {
@@ -149,6 +150,10 @@ class MainActivity : AppCompatActivity() {
                     updateStatus()
                 }
 
+                R.id.nav_source -> {
+                    leadSource()
+                }
+
                 R.id.nav_logout -> {
                     showLogoutConfirmationDialog()
                 }
@@ -173,6 +178,11 @@ class MainActivity : AppCompatActivity() {
             showNotificationPermissionDialog()
         }
         fetchUserDetails()
+    }
+
+    private fun leadSource() {
+        val intent = Intent(this@MainActivity, LeadSourceActivity::class.java)
+        startActivity(intent)
     }
 
 
@@ -259,8 +269,6 @@ class MainActivity : AppCompatActivity() {
                             setupViewPagerWithTabs(statusTypes)
 
 
-
-
                         } else {
                             Toast.makeText(
                                 this@MainActivity,
@@ -280,10 +288,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViewPagerWithTabs(statusTypes: List<DataXXX>) {
-        val pagerAdapter = LeadsPagerAdapter(this, statusTypes)
+        // Create a new list with the static tab added
+        val tabsWithAll = listOf("All") + statusTypes.map { it.status_type }
+
+        // Update the pager adapter to handle the additional "All" tab
+        val pagerAdapter = LeadsPagerAdapter(this, tabsWithAll)
         viewPager.adapter = pagerAdapter
 
         tabLayout.removeAllTabs()
+        // Add the "All" tab
+        tabLayout.addTab(tabLayout.newTab().setText("All"))
+
+        // Add dynamic tabs
         for (status in statusTypes) {
             tabLayout.addTab(tabLayout.newTab().setText(status.status_type))
         }
@@ -310,6 +326,7 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val token = sharedPreferences.getString("token", null)
         val userId = sharedPreferences.getString("userId", null)
+        val managerId = sharedPreferences.getString("managerId", null)
         val role = sharedPreferences.getString("role", null)
 
         if (userId != null && token != null) {
@@ -375,10 +392,10 @@ class MainActivity : AppCompatActivity() {
                 "Manager" -> {
                     // Call getManager function
                     RetrofitInstance.apiInterface.getManager("Bearer $token", id = userId)
-                        .enqueue(object : Callback<GetUserResponse> {
+                        .enqueue(object : Callback<ManagerResponse> {
                             override fun onResponse(
-                                call: Call<GetUserResponse>,
-                                response: Response<GetUserResponse>
+                                call: Call<ManagerResponse>,
+                                response: Response<ManagerResponse>
                             ) {
                                 if (response.isSuccessful) {
                                     val manager = response.body()
@@ -407,7 +424,7 @@ class MainActivity : AppCompatActivity() {
                                         editor.putString("email", manager.email)
                                         editor.putString("mobile", manager.mobile)
                                         editor.putString("company",manager.companyname)
-                                        editor.putString("website",manager.website.firstOrNull())
+                                        editor.putString("website",manager.website)
                                         editor.putString("photo", photoUrl)
                                         editor.apply()
 
@@ -424,7 +441,7 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
 
-                            override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
+                            override fun onFailure(call: Call<ManagerResponse>, t: Throwable) {
                                 Log.e("API Error", "Failed to get manager details: ${t.message}")
                             }
                         })
@@ -509,10 +526,6 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         fetchUserDetails()
 
-        //recreate()
-        // setupTabsAndViewPager()
-        // Re-fetch status data when the activity resumes
-        // Safeguard against re-initialization or potential issues
 
     }
     override fun onNewIntent(intent: Intent?) {

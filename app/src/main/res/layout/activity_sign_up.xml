@@ -118,7 +118,7 @@
 
         <EditText
             android:id="@+id/PasswordEditText"
-            android:layout_width="340dp"
+            android:layout_width="325dp"
             android:layout_height="60dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
@@ -127,7 +127,7 @@
             android:drawableLeft="@drawable/password_scaled"
             android:drawablePadding="10sp"
             android:hint="Password"
-            android:inputType="textPassword"
+            android:inputType="text"
             android:padding="12dp"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -136,7 +136,7 @@
 
         <EditText
             android:id="@+id/ConfirmEditText"
-            android:layout_width="340dp"
+            android:layout_width="325dp"
             android:layout_height="60dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
@@ -145,7 +145,7 @@
             android:drawableLeft="@drawable/password_scaled"
             android:drawablePadding="10sp"
             android:hint="Confirm Password"
-            android:inputType="textPassword"
+            android:inputType="text"
             android:padding="12dp"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"

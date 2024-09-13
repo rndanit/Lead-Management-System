@@ -32,7 +32,7 @@ class ShowLeadAdapter(private val leads: List<ShowLeadResponseItem>) :
         private val companyTextView: TextView = itemView.findViewById(R.id.CompanyNames)
         private val leadInfoTextView: TextView = itemView.findViewById(R.id.LeadSources)
         private val leadDetailTextView: TextView = itemView.findViewById(R.id.lead_detail)
-        private val statusTextView:TextView=itemView.findViewById(R.id.statusText)
+       // private val statusTextView:TextView=itemView.findViewById(R.id.statusText)
 
         fun bind(lead: ShowLeadResponseItem) {
             nameTextView.text =  "${lead.firstname} ${lead.lastname}"
@@ -41,7 +41,7 @@ class ShowLeadAdapter(private val leads: List<ShowLeadResponseItem>) :
             companyTextView.text = "${lead.companyname}"
             leadInfoTextView.text= "${lead.leadInfo}"
             leadDetailTextView.text=" ${lead.leadsDetails}"
-            statusTextView.text="${lead.status}"
+            //statusTextView.text="${lead.status}"
         }
     }
 }

@@ -17,6 +17,12 @@
         android:title="Update Status"/>
 
     <item
+        android:id="@+id/nav_source"
+        android:iconTint="@color/black"
+        android:icon="@drawable/leadsource"
+        android:title="Lead Source"/>
+
+    <item
         android:id="@+id/nav_logout"
         android:iconTint="@color/black"
         android:icon="@drawable/mainlogout"

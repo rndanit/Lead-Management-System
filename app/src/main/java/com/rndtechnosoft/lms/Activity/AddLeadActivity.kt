@@ -20,6 +20,8 @@ import com.rndtechnosoft.lms.Activity.DataModel.AddLeadRequest
 import com.rndtechnosoft.lms.Activity.DataModel.AddLeadResponse
 import com.rndtechnosoft.lms.R
 import com.google.gson.JsonParser
+import com.rndtechnosoft.lms.Activity.DataModel.DataXXXXX
+import com.rndtechnosoft.lms.Activity.DataModel.LeadSourcesResponse
 import com.rndtechnosoft.lms.Activity.DataModel.leadSourceResponseItem
 import retrofit2.Call
 import retrofit2.Callback
@@ -106,46 +108,55 @@ class AddLeadActivity : AppCompatActivity() {
     }
 
     private fun fetchLeadSources(token: String) {
-        RetrofitInstance.apiInterface.leadSource("Bearer $token")
-            .enqueue(object : Callback<MutableList<leadSourceResponseItem>> {
-                override fun onResponse(
-                    call: Call<MutableList<leadSourceResponseItem>>,
-                    response: Response<MutableList<leadSourceResponseItem>>
-                ) {
 
-                    if (response.isSuccessful) {
-                        val leadSources = response.body()
-                        if (!leadSources.isNullOrEmpty()) {
-                            val leadSourceNames = leadSources.map { it.leadSources }
-                            val adapter = ArrayAdapter(
+        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getString("userId", null)
+
+        if (userId != null) {
+            RetrofitInstance.apiInterface.LeadSourceFunction("Bearer $token", userId = userId)
+                .enqueue(object : Callback<LeadSourcesResponse> {
+                    override fun onResponse(
+                        call: Call<LeadSourcesResponse>,
+                        response: Response<LeadSourcesResponse>
+                    ) {
+
+                        if (response.isSuccessful) {
+                            val leadSources = response.body()?.data ?: emptyList()
+
+                            // Populate the spinner with the lead sources
+
+                            if (!leadSources.isNullOrEmpty()) {
+                                val leadSourceNames = leadSources.map { it.status_type }
+                                val adapter = ArrayAdapter(
+                                    this@AddLeadActivity,
+                                    android.R.layout.simple_dropdown_item_1line,
+                                    leadSourceNames
+                                )
+                                leadSourceEditText.setAdapter(adapter)
+                                leadSourceEditText.showDropDown()
+                            }
+                        } else {
+                            Toast.makeText(
                                 this@AddLeadActivity,
-                                android.R.layout.simple_dropdown_item_1line,
-                                leadSourceNames
-                            )
-                            leadSourceEditText.setAdapter(adapter)
-                            leadSourceEditText.showDropDown()
+                                "Failed to fetch lead sources",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                    } else {
+                    }
+
+                    override fun onFailure(
+                        call: Call<LeadSourcesResponse>,
+                        t: Throwable
+                    ) {
+                        mProgress.dismiss()
                         Toast.makeText(
                             this@AddLeadActivity,
-                            "Failed to fetch lead sources",
+                            "Error: ${t.message}",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                }
-
-                override fun onFailure(
-                    call: Call<MutableList<leadSourceResponseItem>>,
-                    t: Throwable
-                ) {
-                    mProgress.dismiss()
-                    Toast.makeText(
-                        this@AddLeadActivity,
-                        "Error: ${t.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
+                })
+        }
     }
 
 

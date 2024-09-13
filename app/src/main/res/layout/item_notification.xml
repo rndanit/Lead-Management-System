@@ -9,7 +9,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/LeadCardView"
         android:layout_width="380dp"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
@@ -29,193 +29,40 @@
 
             <TextView
                 android:id="@+id/name"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
-                android:text="Goud Anit Naresh"
+                android:text="Lead Created"
                 android:textColor="@color/black"
                 android:textSize="17sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="70dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="18dp"
-                android:layout_marginEnd="16dp"
-                android:backgroundTint="#DDDDDD"
-                app:cardCornerRadius="25dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/statusText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="New"
-                    android:textColor="#666666"
-                    android:textSize="17sp"
-                    tools:layout_editor_absoluteX="276dp"
-                    tools:layout_editor_absoluteY="8dp" />
-
-            </androidx.cardview.widget.CardView>
-
-
             <TextView
-                android:id="@+id/email"
-                android:layout_width="340dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:backgroundTint="#0F737373"
-                android:background="@drawable/edittextshape"
-                android:drawableRight="@drawable/emailsvg_scaled"
-                android:drawablePadding="30dp"
-                android:padding="14dp"
-                android:text="nareshgoud9624@gmail.com"
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="31dp"
+                android:text="A new lead form Merile has been created."
                 android:textSize="17sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/name" />
 
             <TextView
-                android:id="@+id/mobile_number"
-                android:layout_width="340dp"
-                android:layout_height="50dp"
-                android:backgroundTint="#0F737373"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/edittextshape"
-                android:drawableRight="@drawable/phone2_scaled"
-                android:drawablePadding="30dp"
-                android:padding="14dp"
-                android:text="9624214943"
-                android:textSize="17sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/email" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/comapny_name"
-                android:layout_width="340dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="16dp"
-                app:cardElevation="0dp"
-                app:cardCornerRadius="15dp"
-                android:backgroundTint="#0F737373"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/mobile_number" >
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="337dp"
-                    android:layout_height="53dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:text="Company Name"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/CompanyNames"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:text="Rnd TechnoSoft"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/lead_info"
-                android:layout_width="340dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="16dp"
-                android:backgroundTint="#0F737373"
-                app:cardElevation="0dp"
-                app:cardCornerRadius="15dp"
-                android:text="Lead Source                                     Google"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/comapny_name" >
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/textView5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:text="Lead Source"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/LeadSources"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:text="IT Company Lead"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            </androidx.cardview.widget.CardView>
-
-            <TextView
-                android:id="@+id/leadDetail"
+                android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
                 android:layout_marginTop="8dp"
-                android:text="Lead Detail:"
-                android:textColor="@color/black"
+                android:layout_marginEnd="17dp"
+                android:text="2024-09-12T05:34:50.629Z"
                 android:textSize="17sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/lead_info" />
-
-            <TextView
-                android:id="@+id/lead_detail"
-                android:layout_width="340dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="Android Developer is a Very Good Filed in a Computer Science"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/leadDetail" />
-
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

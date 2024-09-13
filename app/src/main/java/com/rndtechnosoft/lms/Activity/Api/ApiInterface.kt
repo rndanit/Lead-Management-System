@@ -3,14 +3,21 @@ package com.rndtechnosoft.lms.Activity.Api
 
 import com.rndtechnosoft.lms.Activity.DataModel.AddLeadRequest
 import com.rndtechnosoft.lms.Activity.DataModel.AddLeadResponse
+import com.rndtechnosoft.lms.Activity.DataModel.AddNewLeadSourceRequest
+import com.rndtechnosoft.lms.Activity.DataModel.AddNewLeadSourceResponse
 import com.rndtechnosoft.lms.Activity.DataModel.AddStatusRequest
 import com.rndtechnosoft.lms.Activity.DataModel.AddStatusResponse
 import com.rndtechnosoft.lms.Activity.DataModel.DataXXX
+import com.rndtechnosoft.lms.Activity.DataModel.DeleteLeadResponse
 import com.rndtechnosoft.lms.Activity.DataModel.EditStatusRequest
 import com.rndtechnosoft.lms.Activity.DataModel.EditStatusResponse
 import com.rndtechnosoft.lms.Activity.DataModel.ForgetRequest
 import com.rndtechnosoft.lms.Activity.DataModel.ForgetResponse
+import com.rndtechnosoft.lms.Activity.DataModel.GetAllLeadsResponse
 import com.rndtechnosoft.lms.Activity.DataModel.GetUserResponse
+import com.rndtechnosoft.lms.Activity.DataModel.LeadEditRequest
+import com.rndtechnosoft.lms.Activity.DataModel.LeadSourcesResponse
+import com.rndtechnosoft.lms.Activity.DataModel.ManagerResponse
 import com.rndtechnosoft.lms.Activity.DataModel.NotificationResponseItem
 import com.rndtechnosoft.lms.Activity.DataModel.RestRequest
 import com.rndtechnosoft.lms.Activity.DataModel.RestResponse
@@ -20,6 +27,7 @@ import com.rndtechnosoft.lms.Activity.DataModel.StatusTypeResponse
 import com.rndtechnosoft.lms.Activity.DataModel.UpdaredleadRequest
 import com.rndtechnosoft.lms.Activity.DataModel.UpdatedFields
 import com.rndtechnosoft.lms.Activity.DataModel.UpdatedLeadResponse
+import com.rndtechnosoft.lms.Activity.DataModel.UpdatedLeadSource
 import com.rndtechnosoft.lms.Activity.DataModel.UserLoginRequest
 import com.rndtechnosoft.lms.Activity.DataModel.UserLoginResponse
 import com.rndtechnosoft.lms.Activity.DataModel.UserSignupRequest
@@ -32,6 +40,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -72,7 +81,7 @@ interface ApiInterface {
 
     //GetManagerById Endpoint.
     @GET("manager/getManagerById")
-    fun getManager(@Header("Authorization") token: String, @Query("id") id: String): Call<GetUserResponse>
+    fun getManager(@Header("Authorization") token: String, @Query("id") id: String): Call<ManagerResponse>
 
     //Update Profile EndPoint.
     @Multipart
@@ -133,8 +142,6 @@ interface ApiInterface {
         ): Call<UpdatedFields>
 
 
-
-
     //Notification EndPoint.
     @GET("notification/getNotification")
     fun notification(@Header("Authorization") token: String, @Query("id") id: String): Call<MutableList<NotificationResponseItem>>
@@ -178,6 +185,27 @@ interface ApiInterface {
     //Edit Status Endpoint.
     @PUT("statusType/updateUserStatusType")
     fun editStatus(@Header("Authorization") token: String,@Query("id") id:String,@Body request: EditStatusRequest ):Call<EditStatusResponse>
+
+    //Lead Source Fetch Endpoint.
+    @GET("userLeadSource/getLeadSource")
+    fun LeadSourceFunction(@Header("Authorization") token: String,@Query("userId") userId:String):Call<LeadSourcesResponse>
+
+    //Lead Source Edit Endpoint.
+    @PUT("userLeadSource/updateUserLeadSource")
+    fun LeadSourcesEdit(@Header("Authorization") token: String,@Query("id") id:String,@Body request:LeadEditRequest) :Call<UpdatedLeadSource>
+
+    //Lead Source Delete Endpoint.
+    @DELETE("userLeadSource/deleteUserLeadSource")
+    fun DeleteLeads(@Header("Authorization") token: String,@Query("id") id:String) : Call<DeleteLeadResponse>
+
+    //Lead Source Add Endpoint.
+    @POST("userLeadSource/addLeadSource")
+    fun AddNewLeadSource(@Header("Authorization") token: String,@Query("user") user:String,@Body request: AddNewLeadSourceRequest) :Call<AddNewLeadSourceResponse>
+
+
+    //All Leads show Endpoint.
+    @GET("lead/getLeadById")
+    fun GetAllLeads(@Header("Authorization") token: String,@Query("userId") userId:String) :Call<GetAllLeadsResponse>
 
 }
 
