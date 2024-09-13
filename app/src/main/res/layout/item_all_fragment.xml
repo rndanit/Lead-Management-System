@@ -207,18 +207,28 @@
 
             <TextView
                 android:id="@+id/lead_detail"
-                android:layout_width="340dp"
-                android:layout_height="wrap_content"
+                android:layout_width="244dp"
+                android:layout_height="37dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="33dp"
                 android:layout_marginBottom="24dp"
                 android:text="Android Developer is a Very Good Filed in a Computer Science"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/whatsapp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/leadDetail" />
+
+            <ImageView
+                android:id="@+id/whatsapp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="51dp"
+                android:layout_marginEnd="29dp"
+                android:src="@drawable/whatsapp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lead_info" />
 
 
 

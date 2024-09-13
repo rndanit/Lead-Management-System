@@ -12,20 +12,31 @@
         android:layout_height="wrap_content"
         android:background="@drawable/loginimage">
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/leadmanagementlogo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="62dp"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
             android:text="LEAD MANAGEMENT\nSYSTEM"
             android:textColor="#1D1B20"
             android:textSize="28sp"
             android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/imageView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            />
 
         <TextView
             android:id="@+id/textView3"
@@ -45,11 +56,10 @@
 
         <EditText
             android:id="@+id/comapanyNameEditText"
-            android:layout_width="340dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="52dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginHorizontal="30dp"
             android:backgroundTint="#CECECE"
             android:drawableLeft="@drawable/company_scaled"
             android:drawablePadding="10sp"
@@ -63,11 +73,10 @@
 
         <EditText
             android:id="@+id/NameEditText"
-            android:layout_width="340dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="30dp"
             android:backgroundTint="#CECECE"
             android:drawableLeft="@drawable/name_scaled"
             android:drawablePadding="10sp"
@@ -81,11 +90,10 @@
 
         <EditText
             android:id="@+id/emailEditText"
-            android:layout_width="340dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="30dp"
             android:backgroundTint="#CECECE"
             android:drawableLeft="@drawable/email_scaled"
             android:drawablePadding="17sp"
@@ -99,11 +107,10 @@
 
         <EditText
             android:id="@+id/NumberEditText"
-            android:layout_width="340dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="30dp"
             android:backgroundTint="#CECECE"
             android:drawableLeft="@drawable/phone_scaled"
             android:drawablePadding="10sp"
@@ -118,11 +125,10 @@
 
         <EditText
             android:id="@+id/PasswordEditText"
-            android:layout_width="325dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="30dp"
             android:backgroundTint="#CECECE"
             android:drawableLeft="@drawable/password_scaled"
             android:drawablePadding="10sp"
@@ -136,11 +142,10 @@
 
         <EditText
             android:id="@+id/ConfirmEditText"
-            android:layout_width="325dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="30dp"
             android:backgroundTint="#CECECE"
             android:drawableLeft="@drawable/password_scaled"
             android:drawablePadding="10sp"
@@ -154,11 +159,10 @@
 
         <EditText
             android:id="@+id/WebsiteEditText"
-            android:layout_width="340dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="30dp"
             android:backgroundTint="#CECECE"
             android:drawableLeft="@drawable/website_scaled"
             android:drawablePadding="10sp"
@@ -173,9 +177,10 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/signUp_button"
-            android:layout_width="350dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="50dp"
             android:background="@drawable/processedbuttonshape"
             android:backgroundTint="@color/maincolor"
             android:fontFamily="@font/lato_bold"
@@ -189,12 +194,11 @@
 
         <TextView
             android:id="@+id/alreadyButton"
-            android:layout_width="350dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginStart="104dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="105dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginBottom="15dp"
             android:background="@drawable/yellow_round"
             android:fontFamily="@font/lato_bold"
             android:gravity="center"

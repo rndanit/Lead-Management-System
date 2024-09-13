@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.ProgressBar
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
@@ -34,10 +35,12 @@ class AddLeadActivity : AppCompatActivity() {
     private lateinit var mobileEditText: EditText
     private lateinit var emailEditText: EditText
     private lateinit var companynameEditText: EditText
-    private lateinit var leadSourceEditText: AutoCompleteTextView
+    //private lateinit var leadSourceEditText: AutoCompleteTextView
+    private lateinit var leadSourceSpinner: Spinner
     private lateinit var leadDetailEditText: EditText
     private lateinit var addLeadButton: AppCompatButton
     private lateinit var mProgress: ProgressDialog
+    private var leadSources: List<String> = listOf()
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +57,6 @@ class AddLeadActivity : AppCompatActivity() {
         // Enable back button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
 
@@ -73,7 +75,8 @@ class AddLeadActivity : AppCompatActivity() {
         mobileEditText = findViewById(R.id.MobileNumberEditText)
         emailEditText = findViewById(R.id.EmailaddressEditText)
         companynameEditText = findViewById(R.id.CompanyNameEditText)
-        leadSourceEditText = findViewById(R.id.LeadInfoEditText)
+        //leadSourceEditText = findViewById(R.id.LeadInfoEditText)
+        leadSourceSpinner = findViewById(R.id.LeadInfoSpinner)
         leadDetailEditText = findViewById(R.id.LeadDetailEditText)
 
         // Retrieve the token from SharedPreferences
@@ -90,8 +93,11 @@ class AddLeadActivity : AppCompatActivity() {
         }
 
         // Set up click listener for leadSourceEditText
-        leadSourceEditText.setOnClickListener {
+        /*leadSourceEditText.setOnClickListener {
             token?.let { fetchLeadSources(it) }
+        }*/
+        token?.let {
+            fetchLeadSources(it)
         }
 
 
@@ -104,10 +110,74 @@ class AddLeadActivity : AppCompatActivity() {
                 Toast.makeText(this, "Token not found", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
     private fun fetchLeadSources(token: String) {
+        mProgress.show()
+
+        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getString("userId", null)
+
+        if (userId != null) {
+            RetrofitInstance.apiInterface.LeadSourceFunction("Bearer $token", userId = userId)
+                .enqueue(object : Callback<LeadSourcesResponse> {
+                    override fun onResponse(
+                        call: Call<LeadSourcesResponse>,
+                        response: Response<LeadSourcesResponse>
+                    ) {
+                        mProgress.dismiss() // Dismiss progress bar after response
+
+                        if (response.isSuccessful) {
+                            val leadSources = response.body()?.data ?: emptyList()
+
+                            // Populate the spinner with the lead sources
+                            if (!leadSources.isNullOrEmpty()) {
+                                val leadSourceNames = leadSources.map { it.status_type }.toMutableList()
+
+                                // Add the default "Select Source" title at the beginning
+                                leadSourceNames.add(0, "Select Source")
+
+                                // Set up adapter for Spinner
+                                val adapter = ArrayAdapter(
+                                    this@AddLeadActivity,
+                                    android.R.layout.simple_spinner_item,
+                                    leadSourceNames
+                                )
+                                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+                                // Set adapter to the Spinner
+                                leadSourceSpinner.adapter = adapter
+
+                                // Set the default selection to the first item ("Select Source")
+                                leadSourceSpinner.setSelection(0)
+                            }
+                        } else {
+                            Toast.makeText(
+                                this@AddLeadActivity,
+                                "Failed to fetch lead sources",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<LeadSourcesResponse>,
+                        t: Throwable
+                    ) {
+                        mProgress.dismiss()
+                        Toast.makeText(
+                            this@AddLeadActivity,
+                            "Error: ${t.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
+        }
+    }
+
+
+    /*private fun fetchLeadSources(token: String) {
+        mProgress.show()
 
         val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getString("userId", null)
@@ -157,7 +227,68 @@ class AddLeadActivity : AppCompatActivity() {
                     }
                 })
         }
-    }
+    }*/
+
+    /* private fun fetchLeadSources(token: String) {
+         mProgress.show()
+
+         val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+         val userId = sharedPreferences.getString("userId", null)
+
+         if (userId != null) {
+             RetrofitInstance.apiInterface.LeadSourceFunction("Bearer $token", userId = userId)
+                 .enqueue(object : Callback<LeadSourcesResponse> {
+                     override fun onResponse(
+                         call: Call<LeadSourcesResponse>,
+                         response: Response<LeadSourcesResponse>
+                     ) {
+                         mProgress.dismiss() // Dismiss progress bar after response
+
+                         if (response.isSuccessful) {
+                             val leadSources = response.body()?.data ?: emptyList()
+
+                             // Populate the spinner with the lead sources
+                             if (!leadSources.isNullOrEmpty()) {
+                                 val leadSourceNames = leadSources.map { it.status_type }
+
+                                 // Set up adapter for Spinner
+                                 val adapter = ArrayAdapter(
+                                     this@AddLeadActivity,
+                                     android.R.layout.simple_spinner_item,
+                                     leadSourceNames
+                                 )
+                                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+                                 // Set adapter to the Spinner
+                                 leadSourceSpinner.adapter = adapter
+
+                                 // Optionally set the first item as the selected item
+                                 leadSourceSpinner.setSelection(0)
+                             }
+                         } else {
+                             Toast.makeText(
+                                 this@AddLeadActivity,
+                                 "Failed to fetch lead sources",
+                                 Toast.LENGTH_SHORT
+                             ).show()
+                         }
+                     }
+
+                     override fun onFailure(
+                         call: Call<LeadSourcesResponse>,
+                         t: Throwable
+                     ) {
+                         mProgress.dismiss()
+                         Toast.makeText(
+                             this@AddLeadActivity,
+                             "Error: ${t.message}",
+                             Toast.LENGTH_SHORT
+                         ).show()
+                     }
+                 })
+         }
+     }*/
+
 
 
     private fun addLead(token: String) {
@@ -171,12 +302,12 @@ class AddLeadActivity : AppCompatActivity() {
         val mobile = mobileEditText.text.toString().trim()
         val email = emailEditText.text.toString().trim()
         val companyname = companynameEditText.text.toString().trim()
-        val leadInfo = leadSourceEditText.text.toString().trim()
+        //val leadInfo = leadSourceEditText.text.toString().trim()
+        val leadInfo = leadSourceSpinner.getSelectedItem().toString()
         val leadDetail = leadDetailEditText.text.toString().trim()
 
-        if (firstname.isEmpty() || lastname.isEmpty() || mobile.isEmpty() || email.isEmpty() || companyname.isEmpty() || leadInfo.isEmpty()) {
+        if (firstname.isEmpty() || lastname.isEmpty() || mobile.isEmpty() || email.isEmpty() || companyname.isEmpty() || leadInfo == "Select Source") {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-
             return
         }
 

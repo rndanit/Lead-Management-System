@@ -1,11 +1,13 @@
 package com.rndtechnosoft.lms.Activity.Adapter
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
@@ -13,6 +15,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.rndtechnosoft.lms.Activity.Api.RetrofitInstance
 import com.rndtechnosoft.lms.Activity.DataModel.*
+import com.rndtechnosoft.lms.Activity.WhatsappTemplateActivity
 import com.rndtechnosoft.lms.R
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,8 +34,9 @@ class AllAdapter(
     val role = sharedPreferences.getString("role", null)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StatusViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_all_fragment, parent, false)
-        return StatusViewHolder(view)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_all_fragment, parent, false)
+        return StatusViewHolder(view, context)
     }
 
     override fun onBindViewHolder(holder: StatusViewHolder, position: Int) {
@@ -43,7 +47,7 @@ class AllAdapter(
 
         holder.statusCardView.setOnClickListener {
             if (userId != null) {
-                fetchStatusTypes(holder.statusText, token,role ,userId, managerId,position)
+                fetchStatusTypes(holder.statusText, token, role, userId, managerId, position)
             }
         }
     }
@@ -52,7 +56,14 @@ class AllAdapter(
         return leads.size
     }
 
-    private fun fetchStatusTypes(statusText: TextView, token: String?, role: String?, userId: String?, managerId: String?, position: Int) {
+    private fun fetchStatusTypes(
+        statusText: TextView,
+        token: String?,
+        role: String?,
+        userId: String?,
+        managerId: String?,
+        position: Int
+    ) {
         if (token != null && role != null) {
             // Determine the correct ID based on the role
             val id = when (role) {
@@ -70,7 +81,15 @@ class AllAdapter(
                         ) {
                             if (response.isSuccessful) {
                                 response.body()?.data?.let { statusTypes ->
-                                    showPopupMenu(statusText, statusTypes, token, id, position, this@AllAdapter, leads)
+                                    showPopupMenu(
+                                        statusText,
+                                        statusTypes,
+                                        token,
+                                        id,
+                                        position,
+                                        this@AllAdapter,
+                                        leads
+                                    )
                                     Log.d("StatusCardResponse", "onResponse: {${response.body()}}")
                                 }
                             } else {
@@ -111,7 +130,7 @@ class AllAdapter(
         }
         popupMenu.setOnMenuItemClickListener { menuItem ->
             val newStatus = menuItem.title.toString()
-           statusUpdate(statusText, token, position, newStatus, this@AllAdapter, leads)
+            statusUpdate(statusText, token, position, newStatus, this@AllAdapter, leads)
             true
         }
         popupMenu.show()
@@ -164,11 +183,9 @@ class AllAdapter(
     }
 
 
-
-
-
     class StatusViewHolder(
-        itemView: View
+        itemView: View,
+        private val context: Context
     ) : RecyclerView.ViewHolder(itemView) {
         private val nameTextView: TextView = itemView.findViewById(R.id.name)
         private val emailTextView: TextView = itemView.findViewById(R.id.email)
@@ -181,6 +198,9 @@ class AllAdapter(
         private val leaddetailnew: TextView = itemView.findViewById(R.id.leadDetail)
         private val companynamenew: CardView = itemView.findViewById(R.id.comapny_name)
 
+        // WhatsApp image view
+        private val whatsappImageView: ImageView = itemView.findViewById(R.id.whatsapp)
+
         fun bind(lead: Lead, position: Int) {
             if (lead.firstname.isNotEmpty() && lead.lastname.isNotEmpty() && lead.mobile.isNotEmpty()) {
                 // For Type 1 notifications
@@ -189,7 +209,7 @@ class AllAdapter(
                 leadInfoTextView.text = lead.leadInfo
                 leadDetailTextView.text = lead.leadsDetails
                 companyTextView.text = lead.companyname
-                emailTextView.text=lead.email
+                emailTextView.text = lead.email
             } else {
                 // For Type 2 notifications
                 nameTextView.text = lead.name
@@ -198,8 +218,36 @@ class AllAdapter(
                 leadDetailTextView.text = lead.message
                 leaddetailnew.text = "Message:"
                 companynamenew.visibility = View.GONE
-                emailTextView.text=lead.email
+                emailTextView.text = lead.email
+            }
+            whatsappImageView.setOnClickListener {
+                val mobileNumber = lead.mobile ?: lead.phone // Use lead.mobile or lead.phone
+
+                if (mobileNumber.isNotEmpty()) {
+                    // Store mobile number in SharedPreferences
+                    val sharedPreferences =
+                        context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    editor.putString("mobile_number", mobileNumber)
+                    editor.apply() // Commit the changes
+
+                    // Start the WhatsappTemplateActivity
+                    val intent = Intent(context, WhatsappTemplateActivity::class.java).apply {
+                        putExtra(
+                            "mobile_number",
+                            mobileNumber
+                        ) // Pass the mobile number to the activity
+                    }
+                    Toast.makeText(context, "Mobile number: ${mobileNumber}", Toast.LENGTH_SHORT)
+                        .show()
+                    context.startActivity(intent)
+                } else {
+                    Toast.makeText(context, "Mobile number not available", Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         }
     }
 }
+
+

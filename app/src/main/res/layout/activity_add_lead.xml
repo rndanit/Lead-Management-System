@@ -12,22 +12,26 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/maincolor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/back">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Lead"
-            android:textStyle="bold"
-            android:textSize="22sp"
             android:layout_gravity="center"
-            android:textColor="@color/white"/>
+            android:text="Add Lead"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
     </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
@@ -136,22 +140,36 @@
                 app:layout_constraintTop_toBottomOf="@+id/EmailaddressEditText"
                 app:layout_constraintWidth_percent="0.9" />
 
-            <AutoCompleteTextView
-                android:id="@+id/LeadInfoEditText"
+            <!-- <AutoCompleteTextView
+                 android:id="@+id/LeadInfoEditText"
+                 android:layout_width="0dp"
+                 android:layout_height="60dp"
+                 android:layout_marginTop="8dp"
+                 android:backgroundTint="#CECECE"
+                 android:drawableLeft="@drawable/leadsource_scaled"
+                 android:drawablePadding="10dp"
+                 android:hint="Lead Source"
+                 android:inputType="text"
+                 android:padding="12dp"
+                 android:textSize="16sp"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layout_constraintTop_toBottomOf="@+id/CompanyNameEditText"
+                 app:layout_constraintWidth_percent="0.9" />-->
+
+            <Spinner
+                android:id="@+id/LeadInfoSpinner"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_marginTop="8dp"
-                android:backgroundTint="#CECECE"
-                android:drawableLeft="@drawable/leadsource_scaled"
-                android:drawablePadding="10dp"
-                android:hint="Lead Source"
-                android:inputType="text"
                 android:padding="12dp"
                 android:textSize="16sp"
+                android:popupBackground="@color/white"
+                android:background="@drawable/spinner_border"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/CompanyNameEditText"
-                app:layout_constraintWidth_percent="0.9" />
+                app:layout_constraintWidth_percent="0.9"/>
 
 
             <EditText
@@ -168,7 +186,7 @@
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/LeadInfoEditText"
+                app:layout_constraintTop_toBottomOf="@+id/LeadInfoSpinner"
                 app:layout_constraintWidth_percent="0.9" />
 
             <androidx.appcompat.widget.AppCompatButton

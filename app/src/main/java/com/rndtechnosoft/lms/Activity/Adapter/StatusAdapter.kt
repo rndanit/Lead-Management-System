@@ -24,7 +24,7 @@ import retrofit2.Response
 import kotlin.reflect.KFunction6
 
 class StatusAdapter(
-     val context: Context,
+    val context: Context,
     private val leads: MutableList<DataX>,
     private val cardColor: Int,
     private val textColor: Int
@@ -39,7 +39,7 @@ class StatusAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StatusViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_lead, parent, false)
-        return StatusViewHolder(view, ::statusUpdate, token,context)
+        return StatusViewHolder(view, ::statusUpdate, token, context)
     }
 
     override fun onBindViewHolder(holder: StatusViewHolder, position: Int) {
@@ -55,7 +55,7 @@ class StatusAdapter(
         // Set up click listener for statusCardView to show drop-down list
         holder.statusCardView.setOnClickListener {
             if (userId != null) {
-                fetchStatusTypes(holder.statusText, token,role ,userId, managerId,position)
+                fetchStatusTypes(holder.statusText, token, role, userId, managerId, position)
             }
         }
     }
@@ -64,7 +64,14 @@ class StatusAdapter(
         return leads.size
     }
 
-    private fun fetchStatusTypes(statusText: TextView, token: String?, role: String?, userId: String?, managerId: String?, position: Int) {
+    private fun fetchStatusTypes(
+        statusText: TextView,
+        token: String?,
+        role: String?,
+        userId: String?,
+        managerId: String?,
+        position: Int
+    ) {
         if (token != null && role != null) {
             // Determine the correct ID based on the role
             val id = when (role) {
@@ -82,7 +89,15 @@ class StatusAdapter(
                         ) {
                             if (response.isSuccessful) {
                                 response.body()?.data?.let { statusTypes ->
-                                    showPopupMenu(statusText, statusTypes, token, id, position, this@StatusAdapter, leads)
+                                    showPopupMenu(
+                                        statusText,
+                                        statusTypes,
+                                        token,
+                                        id,
+                                        position,
+                                        this@StatusAdapter,
+                                        leads
+                                    )
                                     Log.d("StatusCardResponse", "onResponse: {${response.body()}}")
                                 }
                             } else {
@@ -223,13 +238,24 @@ class StatusAdapter(
             // Add click listener for WhatsApp image
             whatsappImageView.setOnClickListener {
                 val mobileNumber = lead.mobile ?: lead.phone // Use lead.mobile or lead.phone
+
                 if (mobileNumber.isNotEmpty()) {
+                    // Store mobile number in SharedPreferences
+                    val sharedPreferences =
+                        context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    editor.putString("mobile_number", mobileNumber)
+                    editor.apply() // Commit the changes
+
+                    // Start the WhatsappTemplateActivity
                     val intent = Intent(context, WhatsappTemplateActivity::class.java).apply {
                         putExtra(
                             "mobile_number",
                             mobileNumber
                         ) // Pass the mobile number to the activity
                     }
+                    Toast.makeText(context, "Mobile number: ${mobileNumber}", Toast.LENGTH_SHORT)
+                        .show()
                     context.startActivity(intent)
                 } else {
                     Toast.makeText(context, "Mobile number not available", Toast.LENGTH_SHORT)
@@ -237,7 +263,5 @@ class StatusAdapter(
                 }
             }
         }
-        }
-
-
     }
+}

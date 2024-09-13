@@ -18,10 +18,8 @@
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="200dp"
-                android:layout_height="80dp"
-                android:layout_marginStart="117dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="94dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="50dp"
                 android:src="@drawable/leadmanagementlogo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +29,7 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="42dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
                 android:text="LEAD MANAGEMENT\nSYSTEM"
@@ -62,11 +60,10 @@
 
             <EditText
                 android:id="@+id/EmailEditText"
-                android:layout_width="340dp"
-                android:layout_height="62dp"
-                android:layout_marginStart="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginHorizontal="30dp"
                 android:layout_marginTop="32dp"
-                android:layout_marginEnd="32dp"
                 android:backgroundTint="#CECECE"
                 android:drawableLeft="@drawable/email_scaled"
                 android:drawablePadding="18dp"
@@ -81,11 +78,10 @@
 
             <EditText
                 android:id="@+id/passwordEditText"
-                android:layout_width="340dp"
-                android:layout_height="62dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginTop="20dp"
                 android:backgroundTint="#CECECE"
                 android:drawableLeft="@drawable/password_scaled"
                 android:drawableRight="@drawable/eye_scaled"
@@ -111,11 +107,10 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/login_button"
-                android:layout_width="325dp"
+                android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="62dp"
-                android:layout_marginEnd="24dp"
+                android:layout_marginHorizontal="50dp"
+                android:layout_marginTop="50dp"
                 android:background="@drawable/processedbuttonshape"
                 android:backgroundTint="@color/maincolor"
                 android:fontFamily="@font/lato_bold"
@@ -129,11 +124,11 @@
 
             <TextView
                 android:id="@+id/DontButton"
-                android:layout_width="325dp"
+                android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="24dp"
+                android:layout_marginHorizontal="50dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="50dp"
                 android:background="@drawable/yellow_round"
                 android:fontFamily="@font/lato_bold"
                 android:gravity="center"
@@ -151,13 +146,13 @@
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:indeterminate="true"
-                android:theme="@style/Widget.AppCompat.ProgressBar.Horizontal" />
+                android:theme="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

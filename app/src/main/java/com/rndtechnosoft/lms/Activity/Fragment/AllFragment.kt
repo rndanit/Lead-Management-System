@@ -94,55 +94,60 @@ class AllFragment: Fragment() {
                             response: Response<GetAllLeadsResponse>
                         ) {
                             Log.d("API Response", "Response code: ${response.code()}")
+
+                            // Check if the response is successful and the body is not null
                             if (response.isSuccessful && response.body() != null) {
-                                var leads = response.body()!!.leads
+                                val leads = response.body()?.leads
 
-                                Log.d("ShowLeadFragment", "Fetched leads: $leads")
-                                // Store _id values of Notification Ids
-                                val idsList = leads.map { it._id }
-                                ids =
-                                    idsList.joinToString(",")  // Convert the list to a comma-separated string
-                                Log.d("NotificationActivity", "Notification IDs: $ids")
+                                // Ensure leads is not null before using it
+                                if (leads != null) {
+                                    Log.d("ShowLeadFragment", "Fetched leads: $leads")
 
-                                // Save the ids string in SharedPreferences
-                                sharedPreferences.edit().putString("notification_ids", ids).apply()
+                                    // Store _id values of Notification Ids
+                                    val idsList = leads.map { it._id }
+                                    ids = idsList.joinToString(",")  // Convert the list to a comma-separated string
+                                    Log.d("NotificationActivity", "Notification IDs: $ids")
 
+                                    // Save the ids string in SharedPreferences
+                                    sharedPreferences.edit().putString("notification_ids", ids).apply()
 
-                                // Hide the progress bar and text
-                                progressBarTextView.visibility = View.GONE
-                                progressBar.visibility = View.GONE
-                                swipeRefreshLayout.isRefreshing = false
+                                    // Hide the progress bar and text
+                                    progressBarTextView.visibility = View.GONE
+                                    progressBar.visibility = View.GONE
+                                    swipeRefreshLayout.isRefreshing = false
 
-                                if (leads.isEmpty()) {
-                                    // Show "No Leads Found" message if the list is empty
-                                    noLeadsTextView.visibility = View.VISIBLE
-                                    recyclerView.visibility = View.GONE
+                                    if (leads.isEmpty()) {
+                                        // Show "No Leads Found" message if the list is empty
+                                        noLeadsTextView.visibility = View.VISIBLE
+                                        recyclerView.visibility = View.GONE
+                                    } else {
+                                        // Hide "No Leads Found" message and show the list
+                                        noLeadsTextView.visibility = View.GONE
+                                        recyclerView.visibility = View.VISIBLE
+
+                                        adapter = context?.let { AllAdapter(it, leads) }!!
+                                        recyclerView.adapter = adapter
+                                    }
                                 } else {
-                                    // Hide "No Leads Found" message and show the list
-                                    noLeadsTextView.visibility = View.GONE
-                                    recyclerView.visibility = View.VISIBLE
-                                    adapter = context?.let { AllAdapter(it, leads) }!!
-                                    recyclerView.adapter = adapter
+                                    Log.e("ShowLeadFragment", "Leads list is null")
+                                    // Handle null leads
+                                    progressBarTextView.visibility = View.GONE
+                                    progressBar.visibility = View.GONE
+                                    swipeRefreshLayout.isRefreshing = false
+                                    noLeadsTextView.visibility = View.VISIBLE
                                 }
                             } else {
+                                // Log error response
                                 val errorBody = response.errorBody()?.string()
-                                Log.e(
-                                    "ShowLeadFragment",
-                                    "Response failed or empty: ${response.code()} - ${response.message()} - $errorBody"
-                                )
-                                Log.e(
-                                    "ShowLeadFragment",
-                                    "Raw JSON response: ${response.errorBody()?.string()}"
-                                )
+                                Log.e("ShowLeadFragment", "Response failed: ${response.code()} - ${response.message()} - $errorBody")
 
-                                // Handle failure
+                                // Handle failure case
                                 progressBarTextView.visibility = View.GONE
                                 progressBar.visibility = View.GONE
                                 swipeRefreshLayout.isRefreshing = false
                                 noLeadsTextView.visibility = View.VISIBLE
                             }
                         }
-
                         override fun onFailure(call: Call<GetAllLeadsResponse>, t: Throwable) {
                             Log.e("ShowLeadFragment", "API call failed", t)
 
