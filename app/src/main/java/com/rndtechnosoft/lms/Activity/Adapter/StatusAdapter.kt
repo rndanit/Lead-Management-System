@@ -1,11 +1,13 @@
 package com.rndtechnosoft.lms.Activity.Adapter
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
@@ -13,14 +15,16 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.rndtechnosoft.lms.Activity.Api.RetrofitInstance
 import com.rndtechnosoft.lms.Activity.DataModel.*
+import com.rndtechnosoft.lms.Activity.WhatsappTemplateActivity
 import com.rndtechnosoft.lms.R
+
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.reflect.KFunction6
 
 class StatusAdapter(
-    private val context: Context,
+     val context: Context,
     private val leads: MutableList<DataX>,
     private val cardColor: Int,
     private val textColor: Int
@@ -35,7 +39,7 @@ class StatusAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StatusViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_lead, parent, false)
-        return StatusViewHolder(view, ::statusUpdate, token)
+        return StatusViewHolder(view, ::statusUpdate, token,context)
     }
 
     override fun onBindViewHolder(holder: StatusViewHolder, position: Int) {
@@ -177,7 +181,8 @@ class StatusAdapter(
     class StatusViewHolder(
         itemView: View,
         private val statusUpdateCallback: KFunction6<TextView, String?, Int, String, StatusAdapter, MutableList<DataX>, Unit>,
-        private val token: String?
+        private val token: String?,
+        private val context: Context
     ) : RecyclerView.ViewHolder(itemView) {
         private val nameTextView: TextView = itemView.findViewById(R.id.name)
         private val emailTextView: TextView = itemView.findViewById(R.id.email)
@@ -190,6 +195,11 @@ class StatusAdapter(
         private val leaddetailnew: TextView = itemView.findViewById(R.id.leadDetail)
         private val companynamenew: CardView = itemView.findViewById(R.id.comapny_name)
 
+
+        // WhatsApp image view
+        private val whatsappImageView: ImageView = itemView.findViewById(R.id.whatsapp)
+
+
         fun bind(lead: DataX, position: Int) {
             if (lead.firstname.isNotEmpty() && lead.lastname.isNotEmpty() && lead.mobile.isNotEmpty()) {
                 // For Type 1 notifications
@@ -198,7 +208,7 @@ class StatusAdapter(
                 leadInfoTextView.text = lead.leadInfo
                 leadDetailTextView.text = lead.leadsDetails
                 companyTextView.text = lead.companyname
-                emailTextView.text=lead.email
+                emailTextView.text = lead.email
             } else {
                 // For Type 2 notifications
                 nameTextView.text = lead.name
@@ -207,8 +217,27 @@ class StatusAdapter(
                 leadDetailTextView.text = lead.message
                 leaddetailnew.text = "Message:"
                 companynamenew.visibility = View.GONE
-                emailTextView.text=lead.email
+                emailTextView.text = lead.email
+            }
+
+            // Add click listener for WhatsApp image
+            whatsappImageView.setOnClickListener {
+                val mobileNumber = lead.mobile ?: lead.phone // Use lead.mobile or lead.phone
+                if (mobileNumber.isNotEmpty()) {
+                    val intent = Intent(context, WhatsappTemplateActivity::class.java).apply {
+                        putExtra(
+                            "mobile_number",
+                            mobileNumber
+                        ) // Pass the mobile number to the activity
+                    }
+                    context.startActivity(intent)
+                } else {
+                    Toast.makeText(context, "Mobile number not available", Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         }
+        }
+
+
     }
-}

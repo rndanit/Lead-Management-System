@@ -13,5 +13,5 @@ data class User(
     val photo: List<Any>,
     val role: String,
     val status: String,
-    val website:List<String>
+    val website:String
 )

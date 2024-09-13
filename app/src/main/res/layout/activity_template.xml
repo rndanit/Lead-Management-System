@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Update Status"
+            android:text="Update Template"
             android:textStyle="bold"
             android:textSize="22sp"
             android:layout_gravity="center"
@@ -34,10 +34,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:listitem="@layout/item_showstatus" />
+        tools:listitem="@layout/item_template" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/addStatus_button"
+        android:id="@+id/addTemplate_button"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginBottom="16dp"
@@ -45,7 +45,7 @@
         android:backgroundTint="@color/maincolor"
         android:fontFamily="@font/lato_bold"
         android:padding="20dp"
-        android:text="Add Status"
+        android:text="Add Template"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="19sp"

@@ -10,5 +10,5 @@ data class UpdatedFields(
     @SerializedName("status") val status: String?,
     @SerializedName("updatedAt") val updatedAt: String?,
     @SerializedName("companyname") val companyname: String?,
-    @SerializedName("website") val website:List<String?>,
+    @SerializedName("website") val website:String?,
 )

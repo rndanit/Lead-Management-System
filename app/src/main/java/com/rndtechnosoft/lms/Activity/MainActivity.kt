@@ -154,6 +154,10 @@ class MainActivity : AppCompatActivity() {
                     leadSource()
                 }
 
+                R.id.nav_template-> {
+                    template()
+                }
+
                 R.id.nav_logout -> {
                     showLogoutConfirmationDialog()
                 }
@@ -178,6 +182,11 @@ class MainActivity : AppCompatActivity() {
             showNotificationPermissionDialog()
         }
         fetchUserDetails()
+    }
+
+    private fun template() {
+        val intent = Intent(this@MainActivity, TemplateActivity::class.java)
+        startActivity(intent)
     }
 
     private fun leadSource() {
@@ -367,7 +376,7 @@ class MainActivity : AppCompatActivity() {
                                         editor.putString("email", user.email)
                                         editor.putString("mobile", user.mobile)
                                         editor.putString("company",user.companyname)
-                                        editor.putString("website",user.website.firstOrNull())
+                                        editor.putString("website",user.website)
                                         editor.putString("photo", photoUrl)
                                         editor.apply()
 

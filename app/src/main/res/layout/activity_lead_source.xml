@@ -40,8 +40,7 @@
         android:id="@+id/leadSources_button"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/processedbuttonshape"
         android:backgroundTint="@color/maincolor"
         android:fontFamily="@font/lato_bold"
@@ -54,7 +53,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/showRecyclerview"
         app:layout_constraintWidth_percent="0.9" />
 
 

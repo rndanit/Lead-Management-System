@@ -157,8 +157,6 @@ class ManageProfileActivity : AppCompatActivity() {
         val currentWebsite = sharedPreferences.getString("website", "")
         val originalPhoto = sharedPreferences.getString("photo", "Default Photo")
 
-        // Extract the filename after the last '/'
-        val photoFileName = originalPhoto?.substringAfterLast("/")
 
         Log.d("Image URL", "Photo File Name: $originalPhoto")
 
@@ -238,7 +236,6 @@ class ManageProfileActivity : AppCompatActivity() {
                                     mobileNumberRequestBody,
                                     passwordRequestBody,
                                     companyRequestBody,
-                                    websiteRequestBody,
                                     it,
                                     id = userId
                                 ).enqueue(profileUpdateCallback)
@@ -252,7 +249,6 @@ class ManageProfileActivity : AppCompatActivity() {
                                 mobileNumberRequestBody,
                                 passwordRequestBody,
                                 companyRequestBody,
-                                websiteRequestBody,
                                 id = userId
                             ).enqueue(profileUpdateCallback)
                         }
@@ -286,7 +282,7 @@ class ManageProfileActivity : AppCompatActivity() {
                         websiteName.visibility = View.GONE // Hide the website EditText
                     } else {
                         websiteName.visibility = View.VISIBLE // Show the website EditText if not null or empty
-                        websiteName.setText(it.website.firstOrNull()) // Set the first website if available
+                        websiteName.setText(it.website.toString()) // Set the first website if available
                     }
 
                     // Update SharedPreferences with the new data
@@ -296,7 +292,7 @@ class ManageProfileActivity : AppCompatActivity() {
                         putString("email", it.email)
                         putString("mobile", it.mobile)
                         putString("company", it.companyname)
-                        putString("website", it.website.firstOrNull())
+                        putString("website", it.website)
                         apply()
                     }
 

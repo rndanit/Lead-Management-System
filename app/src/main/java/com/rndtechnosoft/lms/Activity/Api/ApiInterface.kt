@@ -9,11 +9,13 @@ import com.rndtechnosoft.lms.Activity.DataModel.AddStatusRequest
 import com.rndtechnosoft.lms.Activity.DataModel.AddStatusResponse
 import com.rndtechnosoft.lms.Activity.DataModel.DataXXX
 import com.rndtechnosoft.lms.Activity.DataModel.DeleteLeadResponse
+import com.rndtechnosoft.lms.Activity.DataModel.DeleteTemplateResponse
 import com.rndtechnosoft.lms.Activity.DataModel.EditStatusRequest
 import com.rndtechnosoft.lms.Activity.DataModel.EditStatusResponse
 import com.rndtechnosoft.lms.Activity.DataModel.ForgetRequest
 import com.rndtechnosoft.lms.Activity.DataModel.ForgetResponse
 import com.rndtechnosoft.lms.Activity.DataModel.GetAllLeadsResponse
+import com.rndtechnosoft.lms.Activity.DataModel.GetTemplateResponse
 import com.rndtechnosoft.lms.Activity.DataModel.GetUserResponse
 import com.rndtechnosoft.lms.Activity.DataModel.LeadEditRequest
 import com.rndtechnosoft.lms.Activity.DataModel.LeadSourcesResponse
@@ -24,6 +26,9 @@ import com.rndtechnosoft.lms.Activity.DataModel.RestResponse
 import com.rndtechnosoft.lms.Activity.DataModel.ShowLeadResponseItem
 import com.rndtechnosoft.lms.Activity.DataModel.StatusResponse
 import com.rndtechnosoft.lms.Activity.DataModel.StatusTypeResponse
+import com.rndtechnosoft.lms.Activity.DataModel.TemplateAddRequest
+import com.rndtechnosoft.lms.Activity.DataModel.TemplateAddResponse
+import com.rndtechnosoft.lms.Activity.DataModel.TemplateEditRequest
 import com.rndtechnosoft.lms.Activity.DataModel.UpdaredleadRequest
 import com.rndtechnosoft.lms.Activity.DataModel.UpdatedFields
 import com.rndtechnosoft.lms.Activity.DataModel.UpdatedLeadResponse
@@ -38,6 +43,7 @@ import com.rndtechnosoft.lms.Activity.DataModel.nameRequest
 import com.rndtechnosoft.lms.Activity.DataModel.numberRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -121,7 +127,6 @@ interface ApiInterface {
         @Part("mobile") mobile:RequestBody,
         @Part("password")password:RequestBody,
         @Part("companyname")companyname:RequestBody,
-        @Part("website")website:RequestBody,
         @Part photo: MultipartBody.Part,
         @Query("id") id:String,
 
@@ -136,7 +141,6 @@ interface ApiInterface {
         @Part("mobile") mobile:RequestBody,
         @Part("password")password:RequestBody,
         @Part("companyname")companyname:RequestBody,
-        @Part("website")website:RequestBody,
         @Query("id") id:String,
 
         ): Call<UpdatedFields>
@@ -206,6 +210,25 @@ interface ApiInterface {
     //All Leads show Endpoint.
     @GET("lead/getLeadById")
     fun GetAllLeads(@Header("Authorization") token: String,@Query("userId") userId:String) :Call<GetAllLeadsResponse>
+
+
+    @GET("template/gettemplatesByUserId")
+    fun GetTemplate(@Header("Authorization") token: String,@Query("user") user:String): Call<GetTemplateResponse>
+
+    @DELETE("template/delete")
+    fun DeleteTemplate(@Header("Authorization") token: String,@Query("user") user:String) :Call<DeleteTemplateResponse>
+
+
+    @PUT("template/updatetemplate")
+    fun TemplateEdit(@Header("Authorization") token: String,@Query("id") id:String,@Body request:TemplateEditRequest) :Call<ResponseBody>
+
+
+    //Lead Source Add Endpoint.
+    @POST("template/addTemplate")
+    fun AddNewLeadSource(@Header("Authorization") token: String,@Query("user") user:String,@Body request: TemplateAddRequest) :Call<TemplateAddResponse>
+
+
+
 
 }
 

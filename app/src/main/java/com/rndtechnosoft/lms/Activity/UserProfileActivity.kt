@@ -143,7 +143,7 @@ class UserProfileActivity : AppCompatActivity() {
                                         if (user.website.isNullOrEmpty()) {
                                             profileWebsite.visibility = View.GONE // Hide if null or empty
                                         } else {
-                                            profileWebsite.text = user.website.firstOrNull()
+                                            profileWebsite.text = user.website
                                             profileWebsite.visibility = View.VISIBLE // Show if not null
                                         }
 

@@ -23,6 +23,12 @@
         android:title="Lead Source"/>
 
     <item
+        android:id="@+id/nav_template"
+        android:iconTint="@color/black"
+        android:icon="@drawable/leadsource"
+        android:title="Template"/>
+
+    <item
         android:id="@+id/nav_logout"
         android:iconTint="@color/black"
         android:icon="@drawable/mainlogout"
