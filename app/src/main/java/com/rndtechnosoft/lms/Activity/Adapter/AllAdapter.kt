@@ -3,6 +3,7 @@ package com.rndtechnosoft.lms.Activity.Adapter
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -201,6 +202,9 @@ class AllAdapter(
         // WhatsApp image view
         private val whatsappImageView: ImageView = itemView.findViewById(R.id.whatsapp)
 
+        // Call image view
+        private val imgcall: ImageView = itemView.findViewById(R.id.imgCall)
+
         fun bind(lead: Lead, position: Int) {
             if (lead.firstname.isNotEmpty() && lead.lastname.isNotEmpty() && lead.mobile.isNotEmpty()) {
                 // For Type 1 notifications
@@ -244,6 +248,19 @@ class AllAdapter(
                 } else {
                     Toast.makeText(context, "Mobile number not available", Toast.LENGTH_SHORT)
                         .show()
+                }
+            }
+            // Call click listener
+            imgcall.setOnClickListener {
+                val phoneNumber = lead.mobile ?: lead.phone
+                if (phoneNumber.isNotEmpty()) {
+                    // Initiate the call using ACTION_DIAL intent
+                    val intent = Intent(Intent.ACTION_DIAL).apply {
+                        data = Uri.parse("tel:$phoneNumber")
+                    }
+                    context.startActivity(intent)
+                } else {
+                    Toast.makeText(context, "Phone number not available", Toast.LENGTH_SHORT).show()
                 }
             }
         }

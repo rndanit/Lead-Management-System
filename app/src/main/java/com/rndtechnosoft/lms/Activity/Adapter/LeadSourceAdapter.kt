@@ -43,6 +43,15 @@ class LeadSourceAdapter(
         val Leads = LeadList[position]
         holder.LeadText.text = Leads.status_type
 
+        // Check if the status_type is "Website" and hide the edit and delete buttons if true
+        if (Leads.status_type == "Website") {
+            holder.editButton.visibility = View.GONE
+            holder.deleteButton.visibility = View.GONE
+        } else {
+            holder.editButton.visibility = View.VISIBLE
+            holder.deleteButton.visibility = View.VISIBLE
+        }
+
         // Handle edit button click
         holder.editButton.setOnClickListener {
             showEditDialog(Leads.id, position, Leads.status_type)

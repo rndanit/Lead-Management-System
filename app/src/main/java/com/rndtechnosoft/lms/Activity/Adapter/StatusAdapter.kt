@@ -3,6 +3,7 @@ package com.rndtechnosoft.lms.Activity.Adapter
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -210,14 +211,14 @@ class StatusAdapter(
         private val leaddetailnew: TextView = itemView.findViewById(R.id.leadDetail)
         private val companynamenew: CardView = itemView.findViewById(R.id.comapny_name)
 
-
         // WhatsApp image view
         private val whatsappImageView: ImageView = itemView.findViewById(R.id.whatsapp)
 
+        // Call image view
+        private val imgcall: ImageView = itemView.findViewById(R.id.imgCall)
 
         fun bind(lead: DataX, position: Int) {
             if (lead.firstname.isNotEmpty() && lead.lastname.isNotEmpty() && lead.mobile.isNotEmpty()) {
-                // For Type 1 notifications
                 nameTextView.text = "${lead.firstname} ${lead.lastname}"
                 mobileNumberTextView.text = lead.mobile
                 leadInfoTextView.text = lead.leadInfo
@@ -225,7 +226,6 @@ class StatusAdapter(
                 companyTextView.text = lead.companyname
                 emailTextView.text = lead.email
             } else {
-                // For Type 2 notifications
                 nameTextView.text = lead.name
                 mobileNumberTextView.text = lead.phone
                 leadInfoTextView.text = "Own Website"
@@ -235,33 +235,38 @@ class StatusAdapter(
                 emailTextView.text = lead.email
             }
 
-            // Add click listener for WhatsApp image
+            // WhatsApp click listener
             whatsappImageView.setOnClickListener {
-                val mobileNumber = lead.mobile ?: lead.phone // Use lead.mobile or lead.phone
-
+                val mobileNumber = lead.mobile ?: lead.phone
                 if (mobileNumber.isNotEmpty()) {
-                    // Store mobile number in SharedPreferences
-                    val sharedPreferences =
-                        context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                    val sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
                     val editor = sharedPreferences.edit()
                     editor.putString("mobile_number", mobileNumber)
-                    editor.apply() // Commit the changes
+                    editor.apply()
 
-                    // Start the WhatsappTemplateActivity
                     val intent = Intent(context, WhatsappTemplateActivity::class.java).apply {
-                        putExtra(
-                            "mobile_number",
-                            mobileNumber
-                        ) // Pass the mobile number to the activity
+                        putExtra("mobile_number", mobileNumber)
                     }
-                    Toast.makeText(context, "Mobile number: ${mobileNumber}", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(context, "Mobile number: ${mobileNumber}", Toast.LENGTH_SHORT).show()
                     context.startActivity(intent)
                 } else {
-                    Toast.makeText(context, "Mobile number not available", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(context, "Mobile number not available", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            // Call click listener
+            imgcall.setOnClickListener {
+                val phoneNumber = lead.mobile ?: lead.phone
+                if (phoneNumber.isNotEmpty()) {
+                    // Initiate the call using ACTION_DIAL intent
+                    val intent = Intent(Intent.ACTION_DIAL).apply {
+                        data = Uri.parse("tel:$phoneNumber")
+                    }
+                    context.startActivity(intent)
+                } else {
+                    Toast.makeText(context, "Phone number not available", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
-}
+    }

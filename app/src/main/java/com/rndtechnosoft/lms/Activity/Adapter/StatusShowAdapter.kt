@@ -39,11 +39,17 @@ class StatusShowAdapter(
         val status = statusList[position]
         holder.statusText.text = status.status_type
 
+        // Check if the status is "Spam", if yes hide the edit button
+        if (status.status_type.equals("Spam", ignoreCase = true)) {
+            holder.editButton.visibility = View.GONE
+        } else {
+            holder.editButton.visibility = View.VISIBLE
+        }
 
         // Handle edit button click
         holder.editButton.setOnClickListener {
             // Show edit dialog
-            showEditDialog(status.id, position,status.status_type)
+            showEditDialog(status.id, position, status.status_type)
         }
     }
 
@@ -81,7 +87,7 @@ class StatusShowAdapter(
         val sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val token = sharedPreferences.getString("token", null)
 
-        val request=EditStatusRequest(status_type = newStatus)
+        val request = EditStatusRequest(status_type = newStatus)
         if (token != null) {
             RetrofitInstance.apiInterface.editStatus("Bearer $token", statusId, request)
                 .enqueue(object : Callback<EditStatusResponse> {
