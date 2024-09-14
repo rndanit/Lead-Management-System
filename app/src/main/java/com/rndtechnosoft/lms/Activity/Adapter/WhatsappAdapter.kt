@@ -35,7 +35,8 @@ class WhatsappAdapter(
     inner class StatusViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val MessageText: TextView = itemView.findViewById(R.id.message)
         val TitleText: TextView = itemView.findViewById(R.id.title)
-        val whatsappImage: ImageView = itemView.findViewById(R.id.whatsapp)
+        val whatsappImage: ImageView = itemView.findViewById(R.id.LeadCardView)
+
 
         fun bind(Template: DataXXXXXXX) {
             // Set text for message and title

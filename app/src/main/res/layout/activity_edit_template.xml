@@ -77,22 +77,23 @@
 
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/add_button"
-        android:layout_width="350dp"
+        android:id="@+id/addLead_button"
+        android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/processedbuttonshape"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
         android:backgroundTint="@color/maincolor"
         android:fontFamily="@font/lato_bold"
-        android:text="Add"
+        android:padding="20dp"
+        android:text="+     Add Lead"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="19sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/EditTemplateMessage" />
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 
 

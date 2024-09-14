@@ -25,7 +25,7 @@
     <item
         android:id="@+id/nav_template"
         android:iconTint="@color/black"
-        android:icon="@drawable/leadsource"
+        android:icon="@drawable/baseline_filter_none_24"
         android:title="Template"/>
 
     <item
