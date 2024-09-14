@@ -210,22 +210,40 @@ class StatusAdapter(
         val statusText: TextView = itemView.findViewById(R.id.statusTextview)
         private val leaddetailnew: TextView = itemView.findViewById(R.id.leadDetail)
         private val companynamenew: CardView = itemView.findViewById(R.id.comapny_name)
+        private val price: TextView = itemView.findViewById(R.id.lead_price)
+        private val path: TextView = itemView.findViewById(R.id.lead_path)
+        private val leadPath: TextView = itemView.findViewById(R.id.leadPath)
 
         // WhatsApp image view
-        private val whatsappImageView: ImageView = itemView.findViewById(R.id.whatsapp)
+        private val whatsappImageView: ImageView = itemView.findViewById(R.id.imgWhatsapp)
 
         // Call image view
         private val imgcall: ImageView = itemView.findViewById(R.id.imgCall)
 
         fun bind(lead: DataX, position: Int) {
             if (lead.firstname.isNotEmpty() && lead.lastname.isNotEmpty() && lead.mobile.isNotEmpty()) {
+                // For Type 1 notifications
                 nameTextView.text = "${lead.firstname} ${lead.lastname}"
                 mobileNumberTextView.text = lead.mobile
                 leadInfoTextView.text = lead.leadInfo
                 leadDetailTextView.text = lead.leadsDetails
                 companyTextView.text = lead.companyname
                 emailTextView.text = lead.email
+
+                // Set price, default to "0" if null
+                price.text = lead.price ?: "0"
+
+                // Set path visibility based on whether it's null
+                if (lead.path.isNullOrEmpty()) {
+                    leadPath.visibility = View.GONE
+                    path.visibility = View.GONE
+                } else {
+                    leadPath.visibility = View.VISIBLE
+                    path.visibility = View.VISIBLE
+                    path.text = lead.path
+                }
             } else {
+                // For Type 2 notifications
                 nameTextView.text = lead.name
                 mobileNumberTextView.text = lead.phone
                 leadInfoTextView.text = "Own Website"
@@ -233,24 +251,46 @@ class StatusAdapter(
                 leaddetailnew.text = "Message:"
                 companynamenew.visibility = View.GONE
                 emailTextView.text = lead.email
+
+                // Set price, default to "0" if null
+                price.text = lead.price ?: "0"
+
+                // Set path visibility based on whether it's null
+                if (lead.path.isNullOrEmpty()) {
+                    leadPath.visibility = View.GONE
+                    path.visibility = View.GONE
+                } else {
+                    leadPath.visibility = View.VISIBLE
+                    path.visibility = View.VISIBLE
+                    path.text = lead.path
+                }
             }
 
             // WhatsApp click listener
             whatsappImageView.setOnClickListener {
-                val mobileNumber = lead.mobile ?: lead.phone
+                val mobileNumber = lead.mobile ?: lead.phone // Use lead.mobile or lead.phone
+
                 if (mobileNumber.isNotEmpty()) {
-                    val sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                    // Store mobile number in SharedPreferences
+                    val sharedPreferences =
+                        context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
                     val editor = sharedPreferences.edit()
                     editor.putString("mobile_number", mobileNumber)
-                    editor.apply()
+                    editor.apply() // Commit the changes
 
+                    // Start the WhatsappTemplateActivity
                     val intent = Intent(context, WhatsappTemplateActivity::class.java).apply {
-                        putExtra("mobile_number", mobileNumber)
+                        putExtra(
+                            "mobile_number",
+                            mobileNumber
+                        ) // Pass the mobile number to the activity
                     }
-                    Toast.makeText(context, "Mobile number: ${mobileNumber}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Mobile number: $mobileNumber", Toast.LENGTH_SHORT)
+                        .show()
                     context.startActivity(intent)
                 } else {
-                    Toast.makeText(context, "Mobile number not available", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Mobile number not available", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
 
@@ -269,4 +309,4 @@ class StatusAdapter(
             }
         }
     }
-    }
+}

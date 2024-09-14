@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.messaging.RemoteMessage
 import com.rndtechnosoft.lms.Activity.Api.RetrofitInstance
@@ -35,7 +36,7 @@ class WhatsappAdapter(
     inner class StatusViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val MessageText: TextView = itemView.findViewById(R.id.message)
         val TitleText: TextView = itemView.findViewById(R.id.title)
-        val whatsappImage: ImageView = itemView.findViewById(R.id.LeadCardView)
+        val whatsappImage: CardView = itemView.findViewById(R.id.LeadCardView)
 
 
         fun bind(Template: DataXXXXXXX) {

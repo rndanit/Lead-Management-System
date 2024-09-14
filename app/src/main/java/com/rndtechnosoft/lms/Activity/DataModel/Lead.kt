@@ -19,5 +19,7 @@ data class Lead(
     val status: String,
     val subject: String,
     val updatedAt: String,
-    val user: UserXXX
+    val user: UserXXX,
+    val price:String,
+    val path:String
 )

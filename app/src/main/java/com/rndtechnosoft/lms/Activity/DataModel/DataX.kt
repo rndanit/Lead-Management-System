@@ -18,5 +18,7 @@ data class DataX(
     val subject:String,
     val phone:String,
     val message:String,
-    val createdAt:String
+    val createdAt:String,
+    val price:String,
+    val path:String
 )

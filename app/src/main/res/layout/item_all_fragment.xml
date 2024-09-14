@@ -211,6 +211,40 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/leadPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="0dp"
+                    android:backgroundTint="#0F737373"
+                    android:text="Lead Price:"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    />
+
+                <TextView
+                    android:id="@+id/lead_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:text="100000"
+                    android:textSize="16sp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+
+                <TextView
                     android:id="@+id/leadDetail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -219,20 +253,56 @@
                     android:backgroundTint="#0F737373"
                     android:text="Lead Detail:"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    />
 
                 <TextView
                     android:id="@+id/lead_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="2"
                     android:layout_marginStart="2dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginEnd="0dp"
                     android:layout_marginBottom="0dp"
-                    android:layout_weight="2"
                     android:text="Android App"
-                    android:textSize="14sp" />
+                    android:textSize="16sp"
+                    />
 
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/leadPath"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="0dp"
+                    android:backgroundTint="#0F737373"
+                    android:text="Lead path:"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    />
+
+                <TextView
+                    android:id="@+id/lead_path"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:text="Google"
+                    android:textSize="16sp"
+                    />
 
             </LinearLayout>
 
@@ -252,6 +322,7 @@
                     android:layout_marginTop="0dp"
                     android:layout_weight="1"
                     android:src="@drawable/phone"
+                    android:clickable="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/lead_info"
                     app:tint="@color/green" />
@@ -262,12 +333,13 @@
                     android:background="@color/gray" />
 
                 <ImageView
-                    android:id="@+id/whatsapp"
+                    android:id="@+id/imgWhatsapp"
                     android:layout_width="50dp"
                     android:layout_height="40dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginEnd="0dp"
                     android:layout_weight="1"
+                    android:clickable="true"
                     android:src="@drawable/whatsapp" />
 
             </LinearLayout>
